@@ -9,12 +9,12 @@ public class Cube {
     private int actualScore;
     private ImageView actualView;
     private Map <Integer,ImageView> cubesMap;
-    private Image score1 = new Image("file: resources/kostka1.jpg");
-    private Image score2 = new Image("file: resources/kostka2.jpg");
-    private Image score3 = new Image("file: resources/kostka3.jpg");
-    private Image score4 = new Image("file: resources/kostka4.jpg");
-    private Image score5 = new Image("file: resources/kostka5.jpg");
-    private Image score6 = new Image("file: resources/kostka6.jpg");
+    private Image score1 = new Image("file:resources/kostka1.jpg");
+    private Image score2 = new Image("file:resources/kostka2.jpg");
+    private Image score3 = new Image("file:resources/kostka3.jpg");
+    private Image score4 = new Image("file:resources/kostka4.jpg");
+    private Image score5 = new Image("file:resources/kostka5.jpg");
+    private Image score6 = new Image("file:resources/kostka6.jpg");
     Random random = new Random();
 
     public Cube () {
@@ -43,7 +43,7 @@ public class Cube {
         this.actualView = actualView;
     }
 
-    public void CubeThrow () {
+    public void cubeThrow () {
         actualScore = random.nextInt(5)+1;
         actualView = cubesMap.get(actualScore);
     }
