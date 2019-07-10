@@ -98,7 +98,7 @@ public class Table extends Application {
         startButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                Game game = new Game(player1Name.getText(),player2Name.getText());
+                Game game = new Game(player1Name.getText(),player2Name.getText(), Table.this);
                 primaryStage.setScene(game.rebuildScene());
                 game.roundStart();
             }

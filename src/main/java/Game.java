@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Game {
+    private Table table;
     private String player1Name;
     private String player2Name;
     private int player1Score;
@@ -39,9 +40,10 @@ public class Game {
 
     private Scene gameScene;
 
-    public Game(String player1Name, String player2Name) {
+    public Game(String player1Name, String player2Name, Table table) {
         this.player1Name = player1Name;
         this.player2Name = player2Name;
+        this.table = table;
         player1Score = player2Score = 0;
     }
 
@@ -236,13 +238,18 @@ public class Game {
         gameScene = new Scene(gridPane,1024,768,Color.GREY);
         return gameScene;
     }
+
     public void buttonHandler(int cnt) {
-        if (playerSwitch.getSelectedToggle().getUserData().toString()=="Player1") {
+        if (playerSwitch.getSelectedToggle().getUserData().toString().equals("Player1")) {
             player1Score+=tableCubes.get(cnt).getActualScore();
             player1ScoreView.setText(String.valueOf(player1Score));
-        } else if (playerSwitch.getSelectedToggle().getUserData().toString()=="Player2") {
+            player1Cubes.add(tableCubes.get(cnt));
+            drawPlayer1Cubes();
+        } else if (playerSwitch.getSelectedToggle().getUserData().toString().equals("Player2")) {
             player2Score+=tableCubes.get(cnt).getActualScore();
             player2ScoreView.setText(String.valueOf(player2Score));
+            player2Cubes.add(tableCubes.get(cnt));
+          //   drawPlayer2Cubes();
         }
     }
 
@@ -270,8 +277,10 @@ public class Game {
     }
 
     public void drawPlayer1Cubes () {
+        player1Panel.getChildren().clear();
         for(Cube cube: player1Cubes) {
             player1Panel.getChildren().add(cube.getActualView());
+            System.out.println("Test");
         }
     }
 
@@ -280,7 +289,5 @@ public class Game {
             player2Panel.getChildren().add(cube.getActualView());
         }
     }
-
-
 
 }
