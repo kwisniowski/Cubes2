@@ -5,7 +5,6 @@ public class Round {
     private int actualPlayerNumber;
     private int getActualPlayerRoundScore;
     private List<Cube> player1Cubes;
-    private List<Cube> player2Cubes;
     private List<Cube> tableCubes;
 
     public List<Cube> getTableCubes() {
@@ -18,14 +17,6 @@ public class Round {
 
     public void setPlayer1Cubes(List<Cube> player1Cubes) {
         this.player1Cubes = player1Cubes;
-    }
-
-    public List<Cube> getPlayer2Cubes() {
-        return player2Cubes;
-    }
-
-    public void setPlayer2Cubes(List<Cube> player2Cubes) {
-        this.player2Cubes = player2Cubes;
     }
 
     public int getActualPlayerNumber() {
@@ -48,7 +39,6 @@ public class Round {
         this.actualPlayerNumber = actualPlayerNumber;
         tableCubes = new ArrayList<>();
         player1Cubes = new ArrayList<>();
-        player2Cubes = new ArrayList<>();
     }
 
     public void firstThrow() {
@@ -57,7 +47,11 @@ public class Round {
             cube.cubeThrow();
             tableCubes.add(cube);
         }
-
     }
 
+    public int playRound() {
+        firstThrow();
+
+        return getActualPlayerRoundScore;
+    }
 }

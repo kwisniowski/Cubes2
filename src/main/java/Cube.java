@@ -17,14 +17,15 @@ public class Cube {
     private Image score6 = new Image("file:resources/kostka6.jpg");
     Random random = new Random();
 
+
     public Cube () {
         cubesMap = new HashMap<>();
-        cubesMap.put(1,new ImageView(score1));
-        cubesMap.put(2,new ImageView(score2));
-        cubesMap.put(3,new ImageView(score3));
-        cubesMap.put(4,new ImageView(score4));
-        cubesMap.put(5,new ImageView(score5));
-        cubesMap.put(6,new ImageView(score6));
+        cubesMap.put(1, new ImageView(score1));
+        cubesMap.put(2, new ImageView(score2));
+        cubesMap.put(3, new ImageView(score3));
+        cubesMap.put(4, new ImageView(score4));
+        cubesMap.put(5, new ImageView(score5));
+        cubesMap.put(6, new ImageView(score6));
     }
 
     public int getActualScore() {

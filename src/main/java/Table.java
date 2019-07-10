@@ -1,3 +1,4 @@
+
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -17,6 +18,9 @@ import javafx.scene.layout.RowConstraints;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Table extends Application {
     GridPane gridPane = new GridPane();
@@ -66,6 +70,7 @@ public class Table extends Application {
 
         mainCubesPanel.setAlignment(Pos.CENTER);
         mainCubesPanel.setHgap(30);
+        mainCubesPanel.setPrefWrapLength(700);
         welcomeLabel.setAlignment(Pos.CENTER);
         startButton.setAlignment(Pos.BASELINE_CENTER);
         playersNames.setAlignment(Pos.CENTER);
