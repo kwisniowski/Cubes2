@@ -167,51 +167,36 @@ public class Game {
         cube1Button.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                buttonHandler();
+                buttonHandler(0);
                 cube1Button.setDisable(true);
             }
         });
         cube2Button.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                buttonHandler();
+                buttonHandler(1);
                 cube2Button.setDisable(true);
             }
         });
         cube3Button.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                buttonHandler();
+                buttonHandler(2);
                 cube3Button.setDisable(true);
             }
         });
         cube4Button.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                buttonHandler();
+                buttonHandler(3);
                 cube4Button.setDisable(true);
             }
         });
         cube5Button.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                buttonHandler();
+                buttonHandler(4);
                 cube5Button.setDisable(true);
-            }
-        });
-
-        cube2Button.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                if (playerSwitch.getSelectedToggle().getUserData().toString()=="Player1") {
-                    player1Score+=tableCubes.get(1).getActualScore();
-                    player1ScoreView.setText(String.valueOf(player1Score));
-                } else if (playerSwitch.getSelectedToggle().getUserData().toString()=="Player2") {
-                    player2Score+=tableCubes.get(1).getActualScore();
-                    player2ScoreView.setText(String.valueOf(player2Score));
-
-                }
-                cube2Button.setDisable(true);
             }
         });
 
@@ -251,12 +236,12 @@ public class Game {
         gameScene = new Scene(gridPane,1024,768,Color.GREY);
         return gameScene;
     }
-    public void buttonHandler() {
+    public void buttonHandler(int cnt) {
         if (playerSwitch.getSelectedToggle().getUserData().toString()=="Player1") {
-            player1Score+=tableCubes.get(0).getActualScore();
+            player1Score+=tableCubes.get(cnt).getActualScore();
             player1ScoreView.setText(String.valueOf(player1Score));
         } else if (playerSwitch.getSelectedToggle().getUserData().toString()=="Player2") {
-            player2Score+=tableCubes.get(0).getActualScore();
+            player2Score+=tableCubes.get(cnt).getActualScore();
             player2ScoreView.setText(String.valueOf(player2Score));
         }
     }
