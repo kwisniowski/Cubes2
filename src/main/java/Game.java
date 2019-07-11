@@ -45,6 +45,7 @@ public class Game {
         this.player2 = player2;
         player1.setPlayerScore(0);
         player2.setPlayerScore(0);
+        currentPlayer=player2;
     }
 
     public Player getPlayer1() {
@@ -96,72 +97,29 @@ public class Game {
         startRound.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                currentPlayer = player2;
+                switchUser();
+                getTable().getTopCenterPanel().getChildren().clear();
+                getTable().getBottomCenterPanel().getChildren().clear();
                 Round round = new Round(currentPlayer, Game.this);
                 round.playRound();
             }
         });
     }
-}
-/*
-    {
-        @Override
-        public void handle (ActionEvent event){
-        roundStart();
-    }
-    });
 
-}
-
-        cube1Button.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                buttonHandler(0);
-                cube1Button.setDisable(true);
-            }
-        });
-        cube2Button.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                buttonHandler(1);
-                cube2Button.setDisable(true);
-            }
-        });
-        cube3Button.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                buttonHandler(2);
-                cube3Button.setDisable(true);
-            }
-        });
-        cube4Button.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                buttonHandler(3);
-                cube4Button.setDisable(true);
-            }
-        });
-        cube5Button.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                buttonHandler(4);
-                cube5Button.setDisable(true);
-            }
-        });
-
-    public void buttonHandler(int cnt) {
-        if (playerSwitch.getSelectedToggle().getUserData().toString().equals("Player1")) {
-            player1Score+=tableCubes.get(cnt).getActualScore();
-            player1ScoreView.setText(String.valueOf(player1Score));
-            player1Cubes.add(tableCubes.get(cnt));
-            drawPlayer1Cubes();
-        } else if (playerSwitch.getSelectedToggle().getUserData().toString().equals("Player2")) {
-            player2Score+=tableCubes.get(cnt).getActualScore();
-            player2ScoreView.setText(String.valueOf(player2Score));
-            player2Cubes.add(tableCubes.get(cnt));
-          //   drawPlayer2Cubes();
+    public void switchUser () {
+        if (currentPlayer.equals(player1)) {
+            currentPlayer=player2;
+        }
+        else if (currentPlayer.equals(player2)) {
+            currentPlayer=player1;
         }
     }
+}
+/*
+
+
+}
+
 
     public void roundStart() {
         Round round = new Round(1);

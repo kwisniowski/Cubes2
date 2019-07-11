@@ -61,20 +61,40 @@ public class Round {
         return tableCubes;
     }
 
-    public void playRound () {
-        game.getTable().getCenterRightPanel().getChildren().clear();
-        currentPlayerView.setText(player.getName());
-        game.getTable().getCenterRightPanel().getChildren().add(currentPlayer);
-        game.getTable().getCenterRightPanel().getChildren().add(currentPlayerView);
-        cubeThrow(5);
+
+    public void centerPanelDraw() {
         game.getTable().getCenterPanel().getChildren().clear();
         for (Cube cube : tableCubes) {
             cubesBar.getChildren().add(cube.getActualView());
         }
         for (Button button : buttonsList) {
+            button.setDisable(false);
             buttonsBar.getChildren().add(button);
         }
         game.getTable().getCenterPanel().getChildren().add(cubesAndButtonsBar);
+    }
+
+    public boolean throwCheckForEmpty() {
+        boolean result = false;
+        for (Cube cube:tableCubes) {
+            if ((cube.getActualScore()==1)&&(cube.getActualScore()==5)) {
+                result= true;
+            }
+        }
+        return result;
+    }
+
+
+    public void playRound () {
+        currentPlayerView.setText(player.getName());
+        game.getTable().getCenterRightPanel().getChildren().clear();
+        game.getTable().getCenterRightPanel().getChildren().add(game.startRound);
+        game.getTable().getCenterRightPanel().getChildren().add(currentPlayer);
+        game.getTable().getCenterRightPanel().getChildren().add(currentPlayerView);
+        cubeThrow(5);
+        centerPanelDraw();
+
+        System.out.println(throwCheckForEmpty());
 
         cube1Button.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -116,13 +136,8 @@ public class Round {
     public void buttonHandler(int cnt) {
         playerCubes.add(tableCubes.get(cnt));
         drawPlayerCubes(player);
-     /*
-        if (player.equals(game.getPlayer1())) {
-            drawPlayerCubes(game.getPlayer1());
-        } else if (player.equals(game.getPlayer1())) {
-            drawPlayerCubes(game.getPlayer2());
-        } */
     }
+
 
     public void drawPlayerCubes (Player player) {
         if (player.equals(game.getPlayer1())) {
