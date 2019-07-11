@@ -39,6 +39,26 @@ public class Game {
     Label player2NameView = new Label();
     Button startRound = new Button("Start Round");
 
+    public Label getPlayer1ScoreView() {
+        return player1ScoreView;
+    }
+
+    public Label getPlayer2ScoreView() {
+        return player2ScoreView;
+    }
+
+    public void setPlayer1ScoreView(Label player1ScoreView) {
+        this.player1ScoreView = player1ScoreView;
+    }
+
+    public void setPlayer2ScoreView(Label player2ScoreView) {
+        this.player2ScoreView = player2ScoreView;
+    }
+
+    public Player getCurrentPlayer() {
+        return currentPlayer;
+    }
+
     public Game(Table table, Player player1, Player player2) {
         this.table = table;
         this.player1 = player1;

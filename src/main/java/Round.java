@@ -51,16 +51,14 @@ public class Round {
         cubesAndButtonsBar.getChildren().add(buttonsBar);
     }
 
-    public List<Cube> cubeThrow(int cubesCount) {
+    public void cubeThrow(int cubesCount) {
         tableCubes.clear();
         for (int i=0; i<cubesCount; i++) {
             Cube cube = new Cube();
             cube.cubeThrow();
             tableCubes.add(cube);
         }
-        return tableCubes;
     }
-
 
     public void centerPanelDraw() {
         game.getTable().getCenterPanel().getChildren().clear();
@@ -68,22 +66,36 @@ public class Round {
             cubesBar.getChildren().add(cube.getActualView());
         }
         for (Button button : buttonsList) {
-            button.setDisable(false);
             buttonsBar.getChildren().add(button);
         }
         game.getTable().getCenterPanel().getChildren().add(cubesAndButtonsBar);
     }
 
-    public boolean throwCheckForEmpty() {
-        boolean result = false;
+    public void throwCheckForEmpty() {
+        boolean result = true;
         for (Cube cube:tableCubes) {
-            if ((cube.getActualScore()==1)&&(cube.getActualScore()==5)) {
-                result= true;
+            int test = cube.getActualScore();
+            if ((cube.getActualScore()==1)||(cube.getActualScore()==5)) {
+                result= false;
             }
         }
-        return result;
+        if (result) {
+            player.setPlayerScore(player.getPlayerScore()-50);
+            game.getPlayer1ScoreView().setText(String.valueOf(game.getPlayer1().getPlayerScore()));
+            game.getPlayer2ScoreView().setText(String.valueOf(game.getPlayer2().getPlayerScore()));
+            System.out.println("Test");
+        }
     }
 
+    public void validateButtons() {
+        for (int i=0;i<tableCubes.size(); i++) {
+            if ((tableCubes.get(i).getActualScore()!=1)&&(tableCubes.get(i).getActualScore()!=5)) {
+                buttonsList.get(i).setDisable(true);
+            }
+            else buttonsList.get(i).setDisable(false);
+            System.out.println("Test");
+        }
+    }
 
     public void playRound () {
         currentPlayerView.setText(player.getName());
@@ -92,9 +104,9 @@ public class Round {
         game.getTable().getCenterRightPanel().getChildren().add(currentPlayer);
         game.getTable().getCenterRightPanel().getChildren().add(currentPlayerView);
         cubeThrow(5);
+        throwCheckForEmpty();
+        validateButtons();
         centerPanelDraw();
-
-        System.out.println(throwCheckForEmpty());
 
         cube1Button.setOnAction(new EventHandler<ActionEvent>() {
             @Override
