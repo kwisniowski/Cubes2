@@ -9,7 +9,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.FlowPane;
@@ -19,19 +18,80 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Table extends Application {
-    GridPane gridPane = new GridPane();
-    FlowPane player1Panel = new FlowPane(Orientation.HORIZONTAL);
-    FlowPane player2Panel = new FlowPane(Orientation.HORIZONTAL);
-    FlowPane mainCubesPanel = new FlowPane(Orientation.HORIZONTAL);
-    Button startButton = new Button("START");
-    Label welcomeLabel = new Label("Cubes ver. 1   LET'S PLAY");
-    FlowPane playersNames = new FlowPane(Orientation.VERTICAL);
-    TextField player1Name = new TextField(" Player 1:");
-    TextField player2Name = new TextField(" Player 2:");
+    private GridPane gridPane = new GridPane();
+    private FlowPane topCenterPanel = new FlowPane(Orientation.HORIZONTAL);
+    private FlowPane centerPanel = new FlowPane(Orientation.HORIZONTAL);
+    private FlowPane bottomCenterPanel = new FlowPane(Orientation.VERTICAL);
+
+    private FlowPane topLeftPanel = new FlowPane(Orientation.HORIZONTAL);
+    private FlowPane centerLeftPanel = new FlowPane(Orientation.HORIZONTAL);
+    private FlowPane bottomLeftPanel = new FlowPane(Orientation.HORIZONTAL);
+
+    private FlowPane topRightPanel = new FlowPane(Orientation.HORIZONTAL);
+    private FlowPane centerRightPanel = new FlowPane(Orientation.VERTICAL);
+    private FlowPane bottomRightPanel = new FlowPane(Orientation.HORIZONTAL);
+
+    private Button startButton = new Button("START");
+    private Label welcomeLabel = new Label("Cubes ver. 1   LET'S PLAY");
+    private TextField player1NameTextField = new TextField(" Player 1");
+    private TextField player2NameTextField = new TextField(" Player 2");
+
+    public GridPane getGridPane() {
+        return gridPane;
+    }
+
+    public FlowPane getTopCenterPanel() {
+        return topCenterPanel;
+    }
+
+    public FlowPane getCenterPanel() {
+        return centerPanel;
+    }
+
+    public FlowPane getBottomCenterPanel() {
+        return bottomCenterPanel;
+    }
+
+    public FlowPane getTopLeftPanel() {
+        return topLeftPanel;
+    }
+
+    public FlowPane getCenterLeftPanel() {
+        return centerLeftPanel;
+    }
+
+    public FlowPane getBottomLeftPanel() {
+        return bottomLeftPanel;
+    }
+
+    public FlowPane getTopRightPanel() {
+        return topRightPanel;
+    }
+
+    public FlowPane getCenterRightPanel() {
+        return centerRightPanel;
+    }
+
+    public FlowPane getBottomRightPanel() {
+        return bottomRightPanel;
+    }
+
+    public Button getStartButton() {
+        return startButton;
+    }
+
+    public Label getWelcomeLabel() {
+        return welcomeLabel;
+    }
+
+    public TextField getPlayer1NameTextField() {
+        return player1NameTextField;
+    }
+
+    public TextField getPlayer2NameTextField() {
+        return player2NameTextField;
+    }
 
     public static void main(String[] args) {
         launch(args);
@@ -47,10 +107,10 @@ public class Table extends Application {
         gridPane.setGridLinesVisible(true);
 
         ColumnConstraints column0 = new ColumnConstraints();
-        column0.setPercentWidth(15);
         ColumnConstraints column1 = new ColumnConstraints();
-        column1.setPercentWidth(70);
         ColumnConstraints column2 = new ColumnConstraints();
+        column0.setPercentWidth(15);
+        column1.setPercentWidth(70);
         column2.setPercentWidth(15);
         gridPane.getColumnConstraints().addAll(column0,column1,column2);
 
@@ -62,33 +122,43 @@ public class Table extends Application {
         row2.setPercentHeight(20);
         gridPane.getRowConstraints().addAll(row0,row1,row2);
 
+        centerPanel.setAlignment(Pos.CENTER);
+        centerPanel.setHgap(30);
+        centerPanel.setPrefWrapLength(700);
         for (int i=1;i<6;i++) {
             Cube tempCube = new Cube();
             tempCube.cubeThrow();
-            mainCubesPanel.getChildren().add(tempCube.getActualView());
+            centerPanel.getChildren().add(tempCube.getActualView());
         }
 
-        mainCubesPanel.setAlignment(Pos.CENTER);
-        mainCubesPanel.setHgap(30);
-        mainCubesPanel.setPrefWrapLength(700);
-        welcomeLabel.setAlignment(Pos.CENTER);
-        startButton.setAlignment(Pos.BASELINE_CENTER);
-        playersNames.setAlignment(Pos.CENTER);
-        playersNames.getChildren().add(player1Name);
-        playersNames.getChildren().add(player2Name);
+        topCenterPanel.setAlignment(Pos.CENTER);
+        topCenterPanel.getChildren().add(welcomeLabel);
 
-        GridPane.setConstraints(player1Panel,1,0);
-        GridPane.setConstraints(player2Panel,1,2);
-        GridPane.setConstraints(mainCubesPanel, 1,1);
-        GridPane.setConstraints(welcomeLabel,1,0);
-        GridPane.setConstraints(startButton,2,0);
-        GridPane.setConstraints(playersNames,1,2);
-        gridPane.getChildren().addAll(player1Panel,player2Panel,mainCubesPanel,welcomeLabel,startButton,playersNames);
+        topRightPanel.setAlignment(Pos.CENTER);
+        topRightPanel.getChildren().add(startButton);
+
+        bottomCenterPanel.setAlignment(Pos.CENTER);
+        bottomCenterPanel.getChildren().add(player1NameTextField);
+        bottomCenterPanel.getChildren().add(player2NameTextField);
+
+        topRightPanel.setAlignment(Pos.CENTER);
+        bottomRightPanel.setAlignment(Pos.CENTER);
+
+        GridPane.setConstraints(topCenterPanel,1,0);
+        GridPane.setConstraints(bottomCenterPanel,1,2);
+        GridPane.setConstraints(centerPanel, 1,1);
+        GridPane.setConstraints(topRightPanel,2,0);
+        GridPane.setConstraints(centerRightPanel,2,1);
+        GridPane.setConstraints(bottomRightPanel,2,2);
+        GridPane.setConstraints(bottomLeftPanel,0,2);
+        GridPane.setConstraints(centerLeftPanel,0,1);
+        GridPane.setConstraints(topLeftPanel,0,0);
+        gridPane.getChildren().addAll(topCenterPanel,bottomCenterPanel, centerPanel,topRightPanel, bottomRightPanel,
+                centerRightPanel,bottomLeftPanel,centerLeftPanel,topLeftPanel);
 
         Scene scene = new Scene(gridPane, 1024, 768, Color.GREY);
 
-        primaryStage.setTitle("Cubes");
-
+        primaryStage.setTitle("Cubes 2.0");
         primaryStage.setResizable(true);
         primaryStage.initStyle(StageStyle.DECORATED);
 
@@ -98,23 +168,24 @@ public class Table extends Application {
         startButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                Game game = new Game(player1Name.getText(),player2Name.getText(), Table.this);
-                primaryStage.setScene(game.rebuildScene());
-                game.roundStart();
+                Player player1 = new Player(getPlayer1NameTextField().getText());
+                Player player2 = new Player(getPlayer2NameTextField().getText());
+                Game game = new Game(Table.this, player1, player2);
+                game.prepareControls();
             }
         });
 
-       player1Name.setOnMouseClicked(new EventHandler<MouseEvent>() {
+       getPlayer1NameTextField().setOnMouseClicked(new EventHandler<MouseEvent>() {
            @Override
            public void handle(MouseEvent event) {
-               player1Name.clear();
+               getPlayer1NameTextField().clear();
            }
        });
 
-        player2Name.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        getPlayer2NameTextField().setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                player2Name.clear();
+                getPlayer2NameTextField().clear();
             }
         });
     }
