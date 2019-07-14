@@ -16,7 +16,7 @@ public class Cube {
     private Image score5 = new Image("file:resources/kostka5.jpg");
     private Image score6 = new Image("file:resources/kostka6.jpg");
     Random random = new Random();
-
+    private Map <Integer,Integer> cubesPoints;
 
     public Cube () {
         cubesMap = new HashMap<>();
@@ -26,6 +26,18 @@ public class Cube {
         cubesMap.put(4,score4);
         cubesMap.put(5,score5);
         cubesMap.put(6,score6);
+
+        cubesPoints=new HashMap<>();
+        cubesPoints.put(1,10);
+        cubesPoints.put(2,0);
+        cubesPoints.put(3,0);
+        cubesPoints.put(4,0);
+        cubesPoints.put(5,5);
+        cubesPoints.put(6,0);
+    }
+
+    public int validateCubeScore () {
+        return cubesPoints.get(getActualScore());
     }
 
     public int getActualScore() {

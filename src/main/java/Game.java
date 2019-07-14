@@ -30,6 +30,7 @@ public class Game {
     private Player player1;
     private Player player2;
     private Player currentPlayer;
+    private Round round;
     private boolean isGameFinished;
     private List<Cube> tableCubes = new ArrayList<>();
     Label currentPlayerName = new Label("");
@@ -37,7 +38,8 @@ public class Game {
     Label player2ScoreView = new Label();
     Label player1NameView = new Label();
     Label player2NameView = new Label();
-    Button startRound = new Button("Start Round");
+    Button goButton = new Button("Go!");
+    Button nextRound = new Button("End Round");
 
     public Label getPlayer1ScoreView() {
         return player1ScoreView;
@@ -103,7 +105,7 @@ public class Game {
         table.getBottomRightPanel().getChildren().add(player2ScoreView);
 
         table.getCenterRightPanel().getChildren().clear();
-        table.getCenterRightPanel().getChildren().add(startRound);
+        table.getCenterRightPanel().getChildren().add(goButton);
         table.getCenterRightPanel().setAlignment(Pos.CENTER);
         table.getCenterRightPanel().getChildren().add(currentPlayerName);
 
@@ -114,14 +116,25 @@ public class Game {
         table.getCenterPanel().setHgap(30);
         table.getCenterPanel().setPrefWrapLength(700);
 
-        startRound.setOnAction(new EventHandler<ActionEvent>() {
+        goButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                switchUser();
-                getTable().getTopCenterPanel().getChildren().clear();
-                getTable().getBottomCenterPanel().getChildren().clear();
-                Round round = new Round(currentPlayer, Game.this);
-                round.playRound();
+                nextRound();
+            }
+        });
+
+        nextRound.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                if (currentPlayer.equals(player1)) {
+                    player1.setPlayerScore(player1.getPlayerScore()+round.getScore());
+                    player1ScoreView.setText(String.valueOf(player1.getPlayerScore()));
+                }
+                if (currentPlayer.equals(player2)) {
+                    player2.setPlayerScore(player2.getPlayerScore()+round.getScore());
+                    player2ScoreView.setText(String.valueOf(player2.getPlayerScore()));
+                }
+                nextRound();
             }
         });
     }
@@ -133,6 +146,16 @@ public class Game {
         else if (currentPlayer.equals(player2)) {
             currentPlayer=player1;
         }
+    }
+
+    public void nextRound() {
+        switchUser();
+        getTable().getTopCenterPanel().getChildren().clear();
+        getTable().getBottomCenterPanel().getChildren().clear();
+        round = new Round(currentPlayer, Game.this);
+        round.playRound();
+        goButton.setVisible(false);
+        getTable().getCenterRightPanel().getChildren().add(nextRound);
     }
 }
 /*

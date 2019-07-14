@@ -25,10 +25,13 @@ public class Round {
     Button cube3Button = new Button("Pick!");
     Button cube4Button = new Button("Pick!");
     Button cube5Button = new Button("Pick!");
+
+
     List<Button> buttonsList = new ArrayList<>();
     FlowPane cubesBar = new FlowPane(Orientation.HORIZONTAL);
     FlowPane buttonsBar = new FlowPane(Orientation.HORIZONTAL);
     FlowPane cubesAndButtonsBar = new FlowPane(Orientation.VERTICAL);
+    Label scoreView = new Label ("");
 
     public Round(Player player, Game game) {
         this.player = player;
@@ -49,6 +52,10 @@ public class Round {
         buttonsBar.setHgap(90);
         cubesAndButtonsBar.getChildren().add(cubesBar);
         cubesAndButtonsBar.getChildren().add(buttonsBar);
+    }
+
+    public int getScore() {
+        return score;
     }
 
     public void cubeThrow(int cubesCount) {
@@ -98,11 +105,13 @@ public class Round {
     }
 
     public void playRound () {
+        score=0;
         currentPlayerView.setText(player.getName());
+        scoreView.setText(String.valueOf(getScore()));
         game.getTable().getCenterRightPanel().getChildren().clear();
-        game.getTable().getCenterRightPanel().getChildren().add(game.startRound);
         game.getTable().getCenterRightPanel().getChildren().add(currentPlayer);
         game.getTable().getCenterRightPanel().getChildren().add(currentPlayerView);
+        game.getTable().getCenterRightPanel().getChildren().add(scoreView);
         cubeThrow(5);
         throwCheckForEmpty();
         validateButtons();
@@ -147,9 +156,10 @@ public class Round {
 
     public void buttonHandler(int cnt) {
         playerCubes.add(tableCubes.get(cnt));
+        score+=tableCubes.get(cnt).validateCubeScore();
+        scoreView.setText(String.valueOf(getScore()));
         drawPlayerCubes(player);
     }
-
 
     public void drawPlayerCubes (Player player) {
         if (player.equals(game.getPlayer1())) {
