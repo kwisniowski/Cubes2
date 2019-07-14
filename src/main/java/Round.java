@@ -9,9 +9,10 @@ import javafx.scene.layout.FlowPane;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class Round {
-    private int actualPlayerNumber;
     private Player player;
     private List<Cube> playerCubes;
     private List<Cube> tableCubes;
@@ -44,7 +45,6 @@ public class Round {
         buttonsList.add(cube3Button);
         buttonsList.add(cube4Button);
         buttonsList.add(cube5Button);
-
         cubesBar.setAlignment(Pos.CENTER);
         cubesBar.setHgap(30);
         cubesBar.setPrefWrapLength(700);
@@ -94,13 +94,53 @@ public class Round {
         }
     }
 
+    public void throwCheckforBonus() {
+        if (bonusForSameCubes(1)>=3) {
+            score+=(bonusForSameCubes(1)-2)*100;
+            disableBonusCubes(1);
+        }
+        if (bonusForSameCubes(2)>=3) {
+            score+=(bonusForSameCubes(2)-2)*20;
+            disableBonusCubes(2);
+        }
+        if (bonusForSameCubes(3)>=3) {
+            score+=(bonusForSameCubes(3)-2)*30;
+            disableBonusCubes(3);
+        }
+        if (bonusForSameCubes(4)>=3) {
+            score+=(bonusForSameCubes(4)-2)*40;
+            disableBonusCubes(4);
+        }
+        if (bonusForSameCubes(5)>=3) {
+            score+=(bonusForSameCubes(5)-2)*50;
+            disableBonusCubes(5);
+        }
+        if (bonusForSameCubes(6)>=3) {
+            score+=(bonusForSameCubes(6)-2)*60;
+            disableBonusCubes(6);
+        }
+    }
+
+    public void disableBonusCubes (int pointer) {
+            for (int i=0; i<tableCubes.size();i++) {
+                if (tableCubes.get(i).getActualScore()==pointer) buttonsList.get(i).setDisable(true);
+            }
+    }
+
+    public int bonusForSameCubes (int number) {
+        long bonus = IntStream.range(0,tableCubes.size())
+                .filter(c->tableCubes.get(c).getActualScore()==number)
+                .count();
+        return (int) bonus;
+    }
+
+
     public void validateButtons() {
         for (int i=0;i<tableCubes.size(); i++) {
             if ((tableCubes.get(i).getActualScore()!=1)&&(tableCubes.get(i).getActualScore()!=5)) {
                 buttonsList.get(i).setDisable(true);
             }
             else buttonsList.get(i).setDisable(false);
-            System.out.println("Test");
         }
     }
 
@@ -115,6 +155,7 @@ public class Round {
         cubeThrow(5);
         throwCheckForEmpty();
         validateButtons();
+        throwCheckforBonus();
         centerPanelDraw();
 
         cube1Button.setOnAction(new EventHandler<ActionEvent>() {
