@@ -5,11 +5,10 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.paint.Color;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class Round {
@@ -18,6 +17,7 @@ public class Round {
     private List<Cube> tableCubes;
     private int score;
     private Game game;
+    private boolean nextPossible;
     Label currentPlayer = new Label ("Current player:");
     Label currentPlayerView = new Label();
 
@@ -27,14 +27,22 @@ public class Round {
     Button cube4Button = new Button("Pick!");
     Button cube5Button = new Button("Pick!");
 
-
     List<Button> buttonsList = new ArrayList<>();
     FlowPane cubesBar = new FlowPane(Orientation.HORIZONTAL);
     FlowPane buttonsBar = new FlowPane(Orientation.HORIZONTAL);
     FlowPane cubesAndButtonsBar = new FlowPane(Orientation.VERTICAL);
     Label scoreView = new Label ("");
 
+    public List<Cube> getPlayerCubes() {
+        return playerCubes;
+    }
+
+    public List<Cube> getTableCubes() {
+        return tableCubes;
+    }
+
     public Round(Player player, Game game) {
+        nextPossible=false;
         this.player = player;
         this.game = game;
         score = 0;
@@ -54,8 +62,16 @@ public class Round {
         cubesAndButtonsBar.getChildren().add(buttonsBar);
     }
 
+    public void setScore(int score) {
+        this.score = score;
+    }
+
     public int getScore() {
         return score;
+    }
+
+    public Label getScoreView() {
+        return scoreView;
     }
 
     public void cubeThrow(int cubesCount) {
@@ -90,40 +106,62 @@ public class Round {
             player.setPlayerScore(player.getPlayerScore()-50);
             game.getPlayer1ScoreView().setText(String.valueOf(game.getPlayer1().getPlayerScore()));
             game.getPlayer2ScoreView().setText(String.valueOf(game.getPlayer2().getPlayerScore()));
-            System.out.println("Test");
+            game.bonusInfo.setTextFill(Color.RED);
+            game.bonusInfo.setText("UPS!  -50");
         }
+    }
+
+    public Player getPlayer() {
+        return player;
     }
 
     public void throwCheckforBonus() {
         if (bonusForSameCubes(1)>=3) {
             score+=(bonusForSameCubes(1)-2)*100;
+            scoreView.setText(String.valueOf(score));
+            game.bonusInfo.setTextFill(Color.GREEN);
+            game.bonusInfo.setText("Bonus!  ");
             disableBonusCubes(1);
         }
         if (bonusForSameCubes(2)>=3) {
             score+=(bonusForSameCubes(2)-2)*20;
+            scoreView.setText(String.valueOf(score));
+            game.bonusInfo.setText("Bonus!  ");
             disableBonusCubes(2);
         }
         if (bonusForSameCubes(3)>=3) {
             score+=(bonusForSameCubes(3)-2)*30;
+            scoreView.setText(String.valueOf(score));
+            game.bonusInfo.setText("Bonus!  ");
             disableBonusCubes(3);
         }
         if (bonusForSameCubes(4)>=3) {
             score+=(bonusForSameCubes(4)-2)*40;
+            scoreView.setText(String.valueOf(score));
+            game.bonusInfo.setText("Bonus!  ");
             disableBonusCubes(4);
         }
         if (bonusForSameCubes(5)>=3) {
             score+=(bonusForSameCubes(5)-2)*50;
+            scoreView.setText(String.valueOf(score));
+            game.bonusInfo.setText("Bonus!  ");
             disableBonusCubes(5);
         }
         if (bonusForSameCubes(6)>=3) {
             score+=(bonusForSameCubes(6)-2)*60;
+            scoreView.setText(String.valueOf(score));
+            game.bonusInfo.setText("Bonus!  ");
             disableBonusCubes(6);
         }
     }
 
     public void disableBonusCubes (int pointer) {
             for (int i=0; i<tableCubes.size();i++) {
-                if (tableCubes.get(i).getActualScore()==pointer) buttonsList.get(i).setDisable(true);
+                if (tableCubes.get(i).getActualScore()==pointer) {
+                    buttonsList.get(i).setDisable(true);
+                    playerCubes.add(tableCubes.get(i));
+                    drawPlayerCubes(game.getCurrentPlayer());
+                }
             }
     }
 
@@ -133,7 +171,6 @@ public class Round {
                 .count();
         return (int) bonus;
     }
-
 
     public void validateButtons() {
         for (int i=0;i<tableCubes.size(); i++) {
@@ -146,6 +183,7 @@ public class Round {
 
     public void playRound () {
         score=0;
+        game.throwRest.setDisable(false);
         currentPlayerView.setText(player.getName());
         scoreView.setText(String.valueOf(getScore()));
         game.getTable().getCenterRightPanel().getChildren().clear();
@@ -157,6 +195,11 @@ public class Round {
         validateButtons();
         throwCheckforBonus();
         centerPanelDraw();
+
+        if (playerCubes.size()==5) {
+            playRound();
+            game.switchUser();
+        }
 
         cube1Button.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -196,8 +239,8 @@ public class Round {
     }
 
     public void buttonHandler(int cnt) {
-        playerCubes.add(tableCubes.get(cnt));
         score+=tableCubes.get(cnt).validateCubeScore();
+        playerCubes.add(tableCubes.get(cnt));
         scoreView.setText(String.valueOf(getScore()));
         drawPlayerCubes(player);
     }

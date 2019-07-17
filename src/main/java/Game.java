@@ -1,45 +1,32 @@
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.Insets;
-import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.ToggleGroup;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.RowConstraints;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
-
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Game {
     private Table table;
+    private boolean riskResult;
     private Player player1;
     private Player player2;
     private Player currentPlayer;
     private Round round;
-    private boolean isGameFinished;
     private List<Cube> tableCubes = new ArrayList<>();
     Label currentPlayerName = new Label("");
     Label player1ScoreView = new Label();
     Label player2ScoreView = new Label();
     Label player1NameView = new Label();
     Label player2NameView = new Label();
+    Label bonusInfo = new Label();
     Button goButton = new Button("Go!");
     Button nextRound = new Button("End Round");
+    Button throwRest = new Button("Take a risk!");
 
     public Label getPlayer1ScoreView() {
         return player1ScoreView;
@@ -51,6 +38,10 @@ public class Game {
 
     public void setPlayer1ScoreView(Label player1ScoreView) {
         this.player1ScoreView = player1ScoreView;
+    }
+
+    public boolean isRiskResult() {
+        return riskResult;
     }
 
     public void setPlayer2ScoreView(Label player2ScoreView) {
@@ -90,6 +81,7 @@ public class Game {
         player2ScoreView.setFont(new Font("Arial", 24));
         player2NameView.setFont(new Font("Arial", 24));
         player2NameView.setText(player2.getName());
+        bonusInfo.setFont(new Font("Arial",24));
         table.getTopLeftPanel().getChildren().clear();
         table.getTopLeftPanel().setAlignment(Pos.CENTER);
         table.getTopLeftPanel().getChildren().add(player1NameView);
@@ -103,6 +95,10 @@ public class Game {
         table.getTopRightPanel().getChildren().add(player1ScoreView);
         table.getBottomRightPanel().getChildren().clear();
         table.getBottomRightPanel().getChildren().add(player2ScoreView);
+
+        bonusInfo.setAlignment(Pos.CENTER);
+        table.getCenterLeftPanel().setAlignment(Pos.CENTER);
+        table.getCenterLeftPanel().getChildren().add(bonusInfo);
 
         table.getCenterRightPanel().getChildren().clear();
         table.getCenterRightPanel().getChildren().add(goButton);
@@ -126,17 +122,66 @@ public class Game {
         nextRound.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                if (currentPlayer.equals(player1)) {
-                    player1.setPlayerScore(player1.getPlayerScore()+round.getScore());
-                    player1ScoreView.setText(String.valueOf(player1.getPlayerScore()));
+                bonusInfo.setText("");
+                throwRest.setDisable(false);
+                if (!isRiskResult()){
+                    if (currentPlayer.equals(player1)) {
+                        player1.setPlayerScore(player1.getPlayerScore() + round.getScore());
+                        player1ScoreView.setText(String.valueOf(player1.getPlayerScore()));
+                    }
+                    if (currentPlayer.equals(player2)) {
+                        player2.setPlayerScore(player2.getPlayerScore() + round.getScore());
+                        player2ScoreView.setText(String.valueOf(player2.getPlayerScore()));
+                    }
                 }
-                if (currentPlayer.equals(player2)) {
-                    player2.setPlayerScore(player2.getPlayerScore()+round.getScore());
-                    player2ScoreView.setText(String.valueOf(player2.getPlayerScore()));
+                currentPlayer.setPlayersCubes(round.getPlayerCubes());
+                if (currentPlayer.getPlayersCubes().size()==5) {
+                    switchUser();
                 }
+                riskResult =false;
                 nextRound();
             }
         });
+
+        throwRest.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                throwRest.setDisable(true);
+                int cubesCount = 5 - round.getPlayerCubes().size();
+                round.getPlayerCubes().clear();
+                round.getTableCubes().clear();
+                round.buttonsList.clear();
+                round.buttonsBar.setVisible(false);
+                round.cubeThrow(cubesCount);
+                round.throwCheckforBonus();
+                round.centerPanelDraw();
+                long cnt1 = round.getTableCubes().stream()
+                        .map(cube -> cube.getActualScore())
+                        .filter(c -> (c == 1) || (c == 5))
+                        .count();
+                if (cnt1 != 0) {
+                    for (Cube cube : round.getTableCubes()) {
+                        if ((cube.getActualScore() == 5)||(cube.getActualScore()==1)) {
+                            round.getPlayerCubes().add(cube);
+                            round.setScore(round.getScore()+cube.validateCubeScore());
+                            round.getScoreView().setText(String.valueOf(round.getScore()));
+                        }
+                    }
+                    System.out.println("sadas");
+                    round.drawPlayerCubes(round.getPlayer());
+                    System.out.println("qw");
+                }
+                else {
+                    bonusInfo.setTextFill(Color.RED);
+                    bonusInfo.setText("Ups!  ");
+                    riskResult = true;
+                }
+                if (cnt1==cubesCount) {
+                    switchUser();
+                }
+            }
+        });
+
     }
 
     public void switchUser () {
@@ -156,49 +201,7 @@ public class Game {
         round.playRound();
         goButton.setVisible(false);
         getTable().getCenterRightPanel().getChildren().add(nextRound);
+        getTable().getCenterRightPanel().getChildren().add(throwRest);
     }
 }
-/*
 
-
-}
-
-
-    public void roundStart() {
-        Round round = new Round(1);
-        round.firstThrow();
-        tableCubesPanel.getChildren().clear();
-        tableCubes.clear();
-        for(Cube cube: round.getTableCubes()) {
-            tableCubes.add(cube);
-        }
-        drawTableCubes();
-        cube1Button.setDisable(false);
-        cube2Button.setDisable(false);
-        cube3Button.setDisable(false);
-        cube4Button.setDisable(false);
-        cube5Button.setDisable(false);
-    }
-
-    public void drawTableCubes () {
-        tableCubesPanel.getChildren().clear();
-        for(Cube cube: tableCubes) {
-            tableCubesPanel.getChildren().add(cube.getActualView());
-        }
-    }
-
-    public void drawPlayer1Cubes () {
-        player1Panel.getChildren().clear();
-        for(Cube cube: player1Cubes) {
-            player1Panel.getChildren().add(cube.getActualView());
-            System.out.println("Test");
-        }
-    }
-
-    public void drawPlayer2Cubes () {
-        for(Cube cube: player2Cubes) {
-            player2Panel.getChildren().add(cube.getActualView());
-        }
-    }
-
-}   */
