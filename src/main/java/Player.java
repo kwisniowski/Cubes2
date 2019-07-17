@@ -1,9 +1,16 @@
+import javafx.scene.control.Label;
+
 import java.util.List;
 
 public class Player {
     private String name;
     private List<Cube> playersCubes;
     private int playerScore;
+    private Label playerLabel = new Label();
+
+    public Label getPlayerLabel() {
+        return playerLabel;
+    }
 
     public String getName() {
         return name;
@@ -38,5 +45,10 @@ public class Player {
         return "Player{" +
                 "name='" + name + '\'' +
                 '}';
+    }
+
+    public void updateScore (int score) {
+        playerScore+=score;
+        playerLabel.setText(String.valueOf(playerScore));
     }
 }

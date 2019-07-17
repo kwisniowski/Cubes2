@@ -94,65 +94,66 @@ public class Round {
         game.getTable().getCenterPanel().getChildren().add(cubesAndButtonsBar);
     }
 
-    public void throwCheckForEmpty() {
+    public boolean throwCheckForEmpty() {
         boolean result = true;
         for (Cube cube:tableCubes) {
-            int test = cube.getActualScore();
             if ((cube.getActualScore()==1)||(cube.getActualScore()==5)) {
                 result= false;
             }
         }
-        if (result) {
-            player.setPlayerScore(player.getPlayerScore()-50);
-            game.getPlayer1ScoreView().setText(String.valueOf(game.getPlayer1().getPlayerScore()));
-            game.getPlayer2ScoreView().setText(String.valueOf(game.getPlayer2().getPlayerScore()));
-            game.bonusInfo.setTextFill(Color.RED);
-            game.bonusInfo.setText("UPS!  -50");
-        }
+        return result;
     }
 
     public Player getPlayer() {
         return player;
     }
 
-    public void throwCheckforBonus() {
+    public boolean throwCheckforBonus() {
+        boolean isBonus=false;
         if (bonusForSameCubes(1)>=3) {
             score+=(bonusForSameCubes(1)-2)*100;
             scoreView.setText(String.valueOf(score));
             game.bonusInfo.setTextFill(Color.GREEN);
             game.bonusInfo.setText("Bonus!  ");
             disableBonusCubes(1);
+            isBonus=true;
         }
         if (bonusForSameCubes(2)>=3) {
             score+=(bonusForSameCubes(2)-2)*20;
             scoreView.setText(String.valueOf(score));
             game.bonusInfo.setText("Bonus!  ");
             disableBonusCubes(2);
+            isBonus=true;
         }
         if (bonusForSameCubes(3)>=3) {
             score+=(bonusForSameCubes(3)-2)*30;
             scoreView.setText(String.valueOf(score));
             game.bonusInfo.setText("Bonus!  ");
             disableBonusCubes(3);
+            isBonus=true;
         }
         if (bonusForSameCubes(4)>=3) {
             score+=(bonusForSameCubes(4)-2)*40;
             scoreView.setText(String.valueOf(score));
             game.bonusInfo.setText("Bonus!  ");
             disableBonusCubes(4);
+            isBonus=true;
         }
         if (bonusForSameCubes(5)>=3) {
             score+=(bonusForSameCubes(5)-2)*50;
             scoreView.setText(String.valueOf(score));
             game.bonusInfo.setText("Bonus!  ");
             disableBonusCubes(5);
+            isBonus=true;
         }
         if (bonusForSameCubes(6)>=3) {
             score+=(bonusForSameCubes(6)-2)*60;
             scoreView.setText(String.valueOf(score));
             game.bonusInfo.setText("Bonus!  ");
             disableBonusCubes(6);
+            isBonus=true;
         }
+        return isBonus;
     }
 
     public void disableBonusCubes (int pointer) {
@@ -191,9 +192,13 @@ public class Round {
         game.getTable().getCenterRightPanel().getChildren().add(currentPlayerView);
         game.getTable().getCenterRightPanel().getChildren().add(scoreView);
         cubeThrow(5);
-        throwCheckForEmpty();
+        boolean bonus = throwCheckforBonus();
+        if (throwCheckForEmpty()&&(!bonus)) {
+            player.updateScore(-50);
+            game.bonusInfo.setTextFill(Color.RED);
+            game.bonusInfo.setText("UPS!  -50");
+        }
         validateButtons();
-        throwCheckforBonus();
         centerPanelDraw();
 
         if (playerCubes.size()==5) {

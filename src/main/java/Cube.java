@@ -45,7 +45,6 @@ public class Cube {
     }
 
     public ImageView getActualView() {
-
         return new ImageView(actualImage);
     }
 

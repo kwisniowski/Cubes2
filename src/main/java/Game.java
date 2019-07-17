@@ -12,6 +12,7 @@ import java.util.List;
 
 public class Game {
     private Table table;
+    private int secondRoundPoints;
     private boolean riskResult;
     private Player player1;
     private Player player2;
@@ -75,10 +76,10 @@ public class Game {
 
     public void prepareControls() {
 
-        player1ScoreView.setFont(new Font("Arial", 24));
+        player1.getPlayerLabel().setFont(new Font("Arial", 24));
         player1NameView.setFont(new Font("Arial", 24));
         player1NameView.setText(player1.getName());
-        player2ScoreView.setFont(new Font("Arial", 24));
+        player2.getPlayerLabel().setFont(new Font("Arial", 24));
         player2NameView.setFont(new Font("Arial", 24));
         player2NameView.setText(player2.getName());
         bonusInfo.setFont(new Font("Arial",24));
@@ -89,12 +90,12 @@ public class Game {
         table.getBottomLeftPanel().getChildren().clear();
         table.getBottomLeftPanel().getChildren().add(player2NameView);
 
-        player1ScoreView.setText(String.valueOf(player1.getPlayerScore()));
-        player2ScoreView.setText(String.valueOf(player2.getPlayerScore()));
+        player1.getPlayerLabel().setText(String.valueOf(player1.getPlayerScore()));
+        player2.getPlayerLabel().setText(String.valueOf(player2.getPlayerScore()));
         table.getTopRightPanel().getChildren().clear();
-        table.getTopRightPanel().getChildren().add(player1ScoreView);
+        table.getTopRightPanel().getChildren().add(player1.getPlayerLabel());
         table.getBottomRightPanel().getChildren().clear();
-        table.getBottomRightPanel().getChildren().add(player2ScoreView);
+        table.getBottomRightPanel().getChildren().add(player2.getPlayerLabel());
 
         bonusInfo.setAlignment(Pos.CENTER);
         table.getCenterLeftPanel().setAlignment(Pos.CENTER);
@@ -122,20 +123,15 @@ public class Game {
         nextRound.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                secondRoundPoints=round.getScore();
                 bonusInfo.setText("");
                 throwRest.setDisable(false);
                 if (!isRiskResult()){
-                    if (currentPlayer.equals(player1)) {
-                        player1.setPlayerScore(player1.getPlayerScore() + round.getScore());
-                        player1ScoreView.setText(String.valueOf(player1.getPlayerScore()));
-                    }
-                    if (currentPlayer.equals(player2)) {
-                        player2.setPlayerScore(player2.getPlayerScore() + round.getScore());
-                        player2ScoreView.setText(String.valueOf(player2.getPlayerScore()));
-                    }
+                    currentPlayer.updateScore(round.getScore());
                 }
                 currentPlayer.setPlayersCubes(round.getPlayerCubes());
                 if (currentPlayer.getPlayersCubes().size()==5) {
+                   // currentPlayer.setPlayerScore(currentPlayer.getPlayerScore()+round.getScore());
                     switchUser();
                 }
                 riskResult =false;
@@ -153,13 +149,12 @@ public class Game {
                 round.buttonsList.clear();
                 round.buttonsBar.setVisible(false);
                 round.cubeThrow(cubesCount);
-                round.throwCheckforBonus();
                 round.centerPanelDraw();
-                long cnt1 = round.getTableCubes().stream()
+                long counter = round.getTableCubes().stream()
                         .map(cube -> cube.getActualScore())
                         .filter(c -> (c == 1) || (c == 5))
                         .count();
-                if (cnt1 != 0) {
+                if (counter != 0) {
                     for (Cube cube : round.getTableCubes()) {
                         if ((cube.getActualScore() == 5)||(cube.getActualScore()==1)) {
                             round.getPlayerCubes().add(cube);
@@ -167,16 +162,13 @@ public class Game {
                             round.getScoreView().setText(String.valueOf(round.getScore()));
                         }
                     }
-                    System.out.println("sadas");
-                    round.drawPlayerCubes(round.getPlayer());
-                    System.out.println("qw");
                 }
                 else {
                     bonusInfo.setTextFill(Color.RED);
-                    bonusInfo.setText("Ups!  ");
+                    bonusInfo.setText("Ups!");
                     riskResult = true;
                 }
-                if (cnt1==cubesCount) {
+                if (counter==cubesCount) {
                     switchUser();
                 }
             }
