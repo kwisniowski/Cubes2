@@ -28,6 +28,7 @@ public class Game {
     Button goButton = new Button("Go!");
     Button nextRound = new Button("End Round");
     Button throwRest = new Button("Take a risk!");
+    String gameMode;
 
     public Label getPlayer1ScoreView() {
         return player1ScoreView;

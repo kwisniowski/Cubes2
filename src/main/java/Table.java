@@ -1,10 +1,12 @@
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
+import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
@@ -13,7 +15,12 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
+import javax.swing.*;
+
 public class Table extends Application {
+    private String gameMode;
+    private int roundsToEnd;
+    private int pointsToWin;
     private GridPane root = new GridPane();
     private GridPane gridPane = new GridPane();
     private FlowPane topCenterPanel = new FlowPane(Orientation.HORIZONTAL);
@@ -96,7 +103,6 @@ public class Table extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
 
-
         gridPane.setAlignment(Pos.BOTTOM_CENTER);
         gridPane.setPadding(new Insets(15,15,15,15));
         gridPane.setHgap(10);
@@ -170,8 +176,9 @@ public class Table extends Application {
         menuBar.getMenus().add(menuAbout);
         VBox vbox = new VBox(menuBar);
         vbox.setPrefWidth(1024);
+
         root.getChildren().add(vbox);
-        root.getChildren().add(gridPane);
+        //root.getChildren().add(gridPane);
 
         Scene scene = new Scene(root, 1024, 768, Color.GREY);
         primaryStage.setTitle("Cubes 2.0");
@@ -184,10 +191,7 @@ public class Table extends Application {
         startButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                Player player1 = new Player(getPlayer1NameTextField().getText());
-                Player player2 = new Player(getPlayer2NameTextField().getText());
-                Game game = new Game(Table.this, player1, player2);
-                game.prepareControls();
+               startGame();
             }
         });
 
@@ -204,5 +208,71 @@ public class Table extends Application {
                 getPlayer2NameTextField().clear();
             }
         });
+
+        menuItemEndGame.setOnAction(actionEvent -> Platform.exit());
+        menuItemNewGame.setOnAction(actionEvent -> startGame());
+        menuItemAbout.setOnAction(actionEvent -> {
+            Alert infoAlert = new Alert(Alert.AlertType.INFORMATION);
+            infoAlert.setTitle("Cubes 2.0");
+            infoAlert.setContentText("This is a Java FX project\nKacper Wiśniowski\nKurs Kodilla 2019");
+            infoAlert.show();
+        });
+        menuItemSettings.setOnAction(actionEvent-> drawSettingsWindow());
+
+    }
+
+    public void startGame() {
+        Player player1 = new Player(getPlayer1NameTextField().getText());
+        Player player2 = new Player(getPlayer2NameTextField().getText());
+        Game game = new Game(Table.this, player1, player2);
+        game.prepareControls();
+    }
+
+
+    public void drawSettingsWindow() {
+        FlowPane settingsPane = new FlowPane(Orientation.VERTICAL);
+        RadioButton pointsGame = new RadioButton("Points");
+        RadioButton roundGame = new RadioButton("Rounds");
+        Button okSettingsButton = new Button("Save");
+        Button cancelSettingsButton = new Button ("Cancel");
+        ToggleGroup settingsRadioButtons = new ToggleGroup();
+        FlowPane roundsQuantityPane = new FlowPane(Orientation.HORIZONTAL);
+        FlowPane pointsToWinPane = new FlowPane(Orientation.HORIZONTAL);
+        Label pointsLabel = new Label ("Points to win: ");
+        Label roundsLabel = new Label("Rounds to play: ");
+        TextField pointsField = new TextField();
+        TextField roundsField = new TextField();
+        roundsQuantityPane.getChildren().add(roundsLabel);
+        roundsQuantityPane.getChildren().add(roundsField);
+        pointsToWinPane.getChildren().add(pointsLabel);
+        pointsToWinPane.getChildren().add(pointsField);
+
+        pointsGame.setToggleGroup(settingsRadioButtons);
+        roundGame.setToggleGroup(settingsRadioButtons);
+        settingsPane.getChildren().add((new Label(" \nChoose your game type: \n ")));
+        settingsPane.getChildren().add(pointsGame);
+        settingsPane.getChildren().add(roundGame);
+        settingsPane.getChildren().add((new Label(" \n ")));
+        settingsPane.getChildren().add(roundsQuantityPane);
+        settingsPane.getChildren().add(pointsToWinPane);
+        pointsGame.setSelected(true);
+        roundsQuantityPane.setDisable(!roundGame.isSelected());
+        pointsToWinPane.setDisable(!pointsGame.isSelected());
+        settingsPane.getChildren().add(okSettingsButton);
+        settingsPane.getChildren().add(cancelSettingsButton);
+        Scene settingsScene = new Scene (settingsPane, 400,300);
+        Stage settingsStage = new Stage();
+        settingsStage.setTitle("Game Settings");
+        settingsStage.setScene(settingsScene);
+        settingsStage.show();
+
+        okSettingsButton.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                gameMode=settingsRadioButtons.getSelectedToggle().toString();
+
+            }
+        });
+
     }
 }
