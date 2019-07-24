@@ -18,6 +18,16 @@ public class Game {
     private Player player2;
     private Player currentPlayer;
     private Round round;
+
+    public int getRoundCounter() {
+        return roundCounter;
+    }
+
+    public void setRoundCounter(int roundCounter) {
+        this.roundCounter = roundCounter;
+    }
+
+    private int  roundCounter =0;
     private List<Cube> tableCubes = new ArrayList<>();
     Label currentPlayerName = new Label("");
     Label player1ScoreView = new Label();
@@ -133,7 +143,8 @@ public class Game {
                 currentPlayer.setPlayersCubes(round.getPlayerCubes());
                 if (currentPlayer.getPlayersCubes().size()==5) {
                    // currentPlayer.setPlayerScore(currentPlayer.getPlayerScore()+round.getScore());
-                    switchUser();
+                    //switchUser();
+                    round.updateScore(50);
                 }
                 riskResult =false;
                 nextRound();
@@ -169,8 +180,9 @@ public class Game {
                     bonusInfo.setText("Ups!");
                     riskResult = true;
                 }
-                if (counter==cubesCount) {
-                    switchUser();
+                if ((int) counter==cubesCount) {
+                   // switchUser();
+                    round.updateScore(50);
                 }
             }
         });

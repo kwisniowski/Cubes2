@@ -182,17 +182,23 @@ public class Round {
         game.getTable().getCenterRightPanel().getChildren().add(currentPlayerView);
         game.getTable().getCenterRightPanel().getChildren().add(scoreView);
         cubeThrow(5);
+        validateButtons();
         boolean bonus = throwCheckforBonus();
         if (throwCheckForEmpty()&&(!bonus)) {
             player.updateScore(-50);
             game.bonusInfo.setTextFill(Color.RED);
             game.bonusInfo.setText("UPS!  -50");
         }
-        validateButtons();
+        if (throwCheckForEmpty()&&(bonus)) {
+            player.updateScore(-50);
+            game.throwRest.setDisable(false);
+        }
+
         centerPanelDraw();
 
         if (playerCubes.size()==5) {
             playRound();
+            player.updateScore(50);
             game.switchUser();
         }
 
@@ -253,6 +259,11 @@ public class Round {
                 game.getTable().getBottomCenterPanel().getChildren().add(cube.getActualView());
             }
         }
+    }
+
+    public void updateScore (int update) {
+        score+=update;
+        scoreView.setText(String.valueOf(score));
     }
 
 }

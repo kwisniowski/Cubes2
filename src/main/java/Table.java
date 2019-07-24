@@ -19,6 +19,19 @@ import javax.swing.*;
 
 public class Table extends Application {
     private String gameMode;
+
+    public String getGameMode() {
+        return gameMode;
+    }
+
+    public int getRoundsToEnd() {
+        return roundsToEnd;
+    }
+
+    public int getPointsToWin() {
+        return pointsToWin;
+    }
+
     private int roundsToEnd;
     private int pointsToWin;
     private GridPane root = new GridPane();
@@ -177,8 +190,8 @@ public class Table extends Application {
         VBox vbox = new VBox(menuBar);
         vbox.setPrefWidth(1024);
 
-        root.getChildren().add(vbox);
-        //root.getChildren().add(gridPane);
+        //root.getChildren().add(vbox);
+        root.getChildren().add(gridPane);
 
         Scene scene = new Scene(root, 1024, 768, Color.GREY);
         primaryStage.setTitle("Cubes 2.0");
@@ -225,7 +238,15 @@ public class Table extends Application {
         Player player1 = new Player(getPlayer1NameTextField().getText());
         Player player2 = new Player(getPlayer2NameTextField().getText());
         Game game = new Game(Table.this, player1, player2);
+        player1.game = game;
+        player2.game = game;
+
+        ////////////////////////
+        gameMode="Points";
+        pointsToWin = 100;
+        roundsToEnd = 6;
         game.prepareControls();
+        ///////////////////
     }
 
 
@@ -273,6 +294,8 @@ public class Table extends Application {
 
             }
         });
+
+
 
     }
 }
