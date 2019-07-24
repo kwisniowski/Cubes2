@@ -18,6 +18,7 @@ public class Round {
     private int score;
     private Game game;
     private boolean nextPossible;
+    boolean isBonus=false;
     Label currentPlayer = new Label ("Current player:");
     Label currentPlayerView = new Label();
 
@@ -101,6 +102,7 @@ public class Round {
                 result= false;
             }
         }
+        if (result) game.throwRest.setDisable(true);
         return result;
     }
 
@@ -109,51 +111,39 @@ public class Round {
     }
 
     public boolean throwCheckforBonus() {
-        boolean isBonus=false;
-        if (bonusForSameCubes(1)>=3) {
-            score+=(bonusForSameCubes(1)-2)*100;
-            scoreView.setText(String.valueOf(score));
-            game.bonusInfo.setTextFill(Color.GREEN);
-            game.bonusInfo.setText("Bonus!  ");
-            disableBonusCubes(1);
-            isBonus=true;
+
+        if (countSameCubes(1)>=3) {
+            score+=(countSameCubes(1)-2)*100;
+            bonusControl(1);
         }
-        if (bonusForSameCubes(2)>=3) {
-            score+=(bonusForSameCubes(2)-2)*20;
-            scoreView.setText(String.valueOf(score));
-            game.bonusInfo.setText("Bonus!  ");
-            disableBonusCubes(2);
-            isBonus=true;
+        if (countSameCubes(2)>=3) {
+            score += (countSameCubes(2) - 2) * 20;
+            bonusControl(2);
         }
-        if (bonusForSameCubes(3)>=3) {
-            score+=(bonusForSameCubes(3)-2)*30;
-            scoreView.setText(String.valueOf(score));
-            game.bonusInfo.setText("Bonus!  ");
-            disableBonusCubes(3);
-            isBonus=true;
+        if (countSameCubes(3)>=3) {
+            score+=(countSameCubes(3)-2)*30;
+            bonusControl(3);
         }
-        if (bonusForSameCubes(4)>=3) {
-            score+=(bonusForSameCubes(4)-2)*40;
-            scoreView.setText(String.valueOf(score));
-            game.bonusInfo.setText("Bonus!  ");
-            disableBonusCubes(4);
-            isBonus=true;
+        if (countSameCubes(4)>=3) {
+            score+=(countSameCubes(4)-2)*40;
+            bonusControl(4);
         }
-        if (bonusForSameCubes(5)>=3) {
-            score+=(bonusForSameCubes(5)-2)*50;
-            scoreView.setText(String.valueOf(score));
-            game.bonusInfo.setText("Bonus!  ");
-            disableBonusCubes(5);
-            isBonus=true;
+        if (countSameCubes(5)>=3) {
+            score+=(countSameCubes(5)-2)*50;
+            bonusControl(5);
         }
-        if (bonusForSameCubes(6)>=3) {
-            score+=(bonusForSameCubes(6)-2)*60;
-            scoreView.setText(String.valueOf(score));
-            game.bonusInfo.setText("Bonus!  ");
-            disableBonusCubes(6);
-            isBonus=true;
+        if (countSameCubes(6)>=3) {
+            score+=(countSameCubes(6)-2)*60;
+            bonusControl(6);
         }
         return isBonus;
+    }
+
+    public void bonusControl (int pointer) {
+        scoreView.setText(String.valueOf(score));
+        game.bonusInfo.setText("Bonus!  ");
+        disableBonusCubes(pointer);
+        isBonus = true;
     }
 
     public void disableBonusCubes (int pointer) {
@@ -166,7 +156,7 @@ public class Round {
             }
     }
 
-    public int bonusForSameCubes (int number) {
+    public int countSameCubes(int number) {
         long bonus = IntStream.range(0,tableCubes.size())
                 .filter(c->tableCubes.get(c).getActualScore()==number)
                 .count();

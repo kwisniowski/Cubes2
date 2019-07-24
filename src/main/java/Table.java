@@ -6,19 +6,15 @@ import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 public class Table extends Application {
+    private GridPane root = new GridPane();
     private GridPane gridPane = new GridPane();
     private FlowPane topCenterPanel = new FlowPane(Orientation.HORIZONTAL);
     private FlowPane centerPanel = new FlowPane(Orientation.HORIZONTAL);
@@ -100,6 +96,7 @@ public class Table extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
 
+
         gridPane.setAlignment(Pos.BOTTOM_CENTER);
         gridPane.setPadding(new Insets(15,15,15,15));
         gridPane.setHgap(10);
@@ -156,8 +153,27 @@ public class Table extends Application {
         gridPane.getChildren().addAll(topCenterPanel,bottomCenterPanel, centerPanel,topRightPanel, bottomRightPanel,
                 centerRightPanel,bottomLeftPanel,centerLeftPanel,topLeftPanel);
 
-        Scene scene = new Scene(gridPane, 1024, 768, Color.GREY);
+        Menu menuGame = new Menu("Game");
+        Menu menuSettings = new Menu("Settings");
+        Menu menuAbout = new Menu("About");
+        MenuItem menuItemNewGame = new MenuItem("New game");
+        MenuItem menuItemEndGame = new MenuItem("End game");
+        MenuItem menuItemAbout = new MenuItem("Show game info");
+        MenuItem menuItemSettings = new MenuItem("ShowSettings");
+        menuGame.getItems().add(menuItemNewGame);
+        menuGame.getItems().add(menuItemEndGame);
+        menuSettings.getItems().add(menuItemSettings);
+        menuAbout.getItems().add(menuItemAbout);
+        MenuBar menuBar = new MenuBar();
+        menuBar.getMenus().add(menuGame);
+        menuBar.getMenus().add(menuSettings);
+        menuBar.getMenus().add(menuAbout);
+        VBox vbox = new VBox(menuBar);
+        vbox.setPrefWidth(1024);
+        root.getChildren().add(vbox);
+        root.getChildren().add(gridPane);
 
+        Scene scene = new Scene(root, 1024, 768, Color.GREY);
         primaryStage.setTitle("Cubes 2.0");
         primaryStage.setResizable(true);
         primaryStage.initStyle(StageStyle.DECORATED);
