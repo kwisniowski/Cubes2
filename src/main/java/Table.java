@@ -232,14 +232,16 @@ public class Table extends Application {
     public void drawSettingsWindow() {
         FlowPane settingsPane = new FlowPane(Orientation.VERTICAL);
         RadioButton pointsGame = new RadioButton("Points");
+        pointsGame.setUserData(new String("Ronds"));
         RadioButton roundGame = new RadioButton("Rounds");
+        roundGame.setUserData(new String("Points"));
         Button okSettingsButton = new Button("Save");
         Button cancelSettingsButton = new Button ("Cancel");
         ToggleGroup settingsRadioButtons = new ToggleGroup();
         FlowPane roundsQuantityPane = new FlowPane(Orientation.HORIZONTAL);
         FlowPane pointsToWinPane = new FlowPane(Orientation.HORIZONTAL);
-        Label pointsLabel = new Label ("Points to win: ");
-        Label roundsLabel = new Label("Rounds to play: ");
+        Label pointsLabel = new Label ("Points to win:  ");
+        Label roundsLabel = new Label( "Rounds to play: ");
         TextField pointsField = new TextField();
         TextField roundsField = new TextField();
         roundsQuantityPane.getChildren().add(roundsLabel);
@@ -251,16 +253,17 @@ public class Table extends Application {
         roundGame.setToggleGroup(settingsRadioButtons);
         settingsPane.getChildren().add((new Label(" \nChoose your game type: \n ")));
         settingsPane.getChildren().add(pointsGame);
-        settingsPane.getChildren().add(roundGame);
-        settingsPane.getChildren().add((new Label(" \n ")));
-        settingsPane.getChildren().add(roundsQuantityPane);
         settingsPane.getChildren().add(pointsToWinPane);
+        settingsPane.getChildren().add((new Label(" \n ")));
+        settingsPane.getChildren().add(roundGame);
+        settingsPane.getChildren().add(roundsQuantityPane);
+        settingsPane.getChildren().add((new Label(" \n ")));
+
         pointsGame.setSelected(true);
-        roundsQuantityPane.setDisable(!roundGame.isSelected());
-        pointsToWinPane.setDisable(!pointsGame.isSelected());
+        roundsQuantityPane.setDisable(true);
         settingsPane.getChildren().add(okSettingsButton);
         settingsPane.getChildren().add(cancelSettingsButton);
-        Scene settingsScene = new Scene (settingsPane, 400,300);
+        Scene settingsScene = new Scene (settingsPane, 370,260);
         Stage settingsStage = new Stage();
         settingsStage.setTitle("Game Settings");
         settingsStage.setScene(settingsScene);
@@ -274,5 +277,35 @@ public class Table extends Application {
             }
         });
 
+        roundGame.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                if (roundGame.isSelected()) {
+                    roundsQuantityPane.setDisable(false);
+                    pointsToWinPane.setDisable(true);
+                }
+            }
+        });
+
+        pointsGame.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                if (pointsGame.isSelected()){
+                    roundsQuantityPane.setDisable(true);
+                    pointsToWinPane.setDisable(false);
+                }
+            }
+        });
+
+        cancelSettingsButton.setOnAction(event -> settingsStage.close());
+
+        okSettingsButton.setOnAction(event -> {
+            this.gameMode = settingsRadioButtons.getSelectedToggle().getUserData().toString();
+            System.out.println(gameMode);
+            if (roundGame.isSelected()) {
+
+                this.roundsToEnd = Integer.parseInt(roundsField.getText());
+            }
+        });
     }
 }
