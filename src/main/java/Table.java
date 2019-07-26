@@ -34,7 +34,7 @@ public class Table extends Application {
 
     private int roundsToEnd;
     private int pointsToWin;
-    private GridPane root = new GridPane();
+    private VBox root = new VBox();
     private GridPane gridPane = new GridPane();
     private FlowPane topCenterPanel = new FlowPane(Orientation.HORIZONTAL);
     private FlowPane centerPanel = new FlowPane(Orientation.HORIZONTAL);
@@ -191,7 +191,7 @@ public class Table extends Application {
         vbox.setPrefWidth(1024);
 
         root.getChildren().add(vbox);
-        //root.getChildren().add(gridPane);
+        root.getChildren().add(gridPane);
 
         Scene scene = new Scene(root, 1024, 768, Color.GREY);
         primaryStage.setTitle("Cubes 2.0");
