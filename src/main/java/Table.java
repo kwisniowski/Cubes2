@@ -16,9 +16,11 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 import javax.swing.*;
+import java.io.*;
+import java.nio.Buffer;
 
 public class Table extends Application {
-    private String gameMode;
+    private String gameMode="Points";
 
     public String getGameMode() {
         return gameMode;
@@ -32,11 +34,11 @@ public class Table extends Application {
         return pointsToWin;
     }
 
-    private int roundsToEnd;
-    private int pointsToWin;
+    private int roundsToEnd=20;
+    private int pointsToWin=300;
     private VBox root = new VBox();
     private GridPane gridPane = new GridPane();
-    private FlowPane topCenterPanel = new FlowPane(Orientation.HORIZONTAL);
+    private HBox topCenterPanel = new HBox();
     private FlowPane centerPanel = new FlowPane(Orientation.HORIZONTAL);
     private FlowPane bottomCenterPanel = new FlowPane(Orientation.VERTICAL);
 
@@ -53,11 +55,14 @@ public class Table extends Application {
     private TextField player1NameTextField = new TextField(" Player 1");
     private TextField player2NameTextField = new TextField(" Player 2");
 
+    Label customSettingsLabel1 = new Label ("      Game mode: ");
+    Label customSettingsLabel2 = new Label();
+
     public GridPane getGridPane() {
         return gridPane;
     }
 
-    public FlowPane getTopCenterPanel() {
+    public HBox getTopCenterPanel() {
         return topCenterPanel;
     }
 
@@ -149,6 +154,9 @@ public class Table extends Application {
 
         topCenterPanel.setAlignment(Pos.CENTER);
         topCenterPanel.getChildren().add(welcomeLabel);
+        topCenterPanel.getChildren().add(customSettingsLabel1);
+        topCenterPanel.getChildren().add(customSettingsLabel2);
+        customSettingsLabel2.setText(gameMode.toUpperCase()+ "( "+ (gameMode.equals("Ronds")? roundsToEnd : pointsToWin)+ " )");
 
         topRightPanel.setAlignment(Pos.CENTER);
         topRightPanel.getChildren().add(startButton);
@@ -179,14 +187,17 @@ public class Table extends Application {
         MenuItem menuItemEndGame = new MenuItem("End game");
         MenuItem menuItemAbout = new MenuItem("Show game info");
         MenuItem menuItemSettings = new MenuItem("ShowSettings");
+        MenuItem menuRules = new MenuItem("Show game rules");
         menuGame.getItems().add(menuItemNewGame);
         menuGame.getItems().add(menuItemEndGame);
+        menuGame.getItems().add(menuRules);
         menuSettings.getItems().add(menuItemSettings);
         menuAbout.getItems().add(menuItemAbout);
         MenuBar menuBar = new MenuBar();
         menuBar.getMenus().add(menuGame);
         menuBar.getMenus().add(menuSettings);
         menuBar.getMenus().add(menuAbout);
+
         VBox vbox = new VBox(menuBar);
         vbox.setPrefWidth(1024);
 
@@ -204,6 +215,7 @@ public class Table extends Application {
         startButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                menuSettings.setDisable(true);
                startGame();
             }
         });
@@ -231,6 +243,21 @@ public class Table extends Application {
             infoAlert.show();
         });
         menuItemSettings.setOnAction(actionEvent-> drawSettingsWindow());
+        menuRules.setOnAction(actionEvent -> {
+            Alert infoAlert = new Alert(Alert.AlertType.INFORMATION);
+            infoAlert.setTitle("Cubes 2.0 Rules");
+            StringBuilder sb = new StringBuilder();
+            try {
+                BufferedReader in = new BufferedReader(new FileReader(new File("resources/rules.txt")));
+                while (in.readLine()!=null) {
+                    sb.append(in.readLine()+"\n");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        infoAlert.setContentText(sb.toString());
+            infoAlert.show();
+        });
 
     }
 
@@ -241,21 +268,16 @@ public class Table extends Application {
         player1.game = game;
         player2.game = game;
 
-        ////////////////////////
-        gameMode="Points";
-        pointsToWin = 100;
-        roundsToEnd = 6;
         game.prepareControls();
-        ///////////////////
     }
 
 
     public void drawSettingsWindow() {
         FlowPane settingsPane = new FlowPane(Orientation.VERTICAL);
         RadioButton pointsGame = new RadioButton("Points");
-        pointsGame.setUserData(new String("Ronds"));
+        pointsGame.setUserData(new String("Points"));
         RadioButton roundGame = new RadioButton("Rounds");
-        roundGame.setUserData(new String("Points"));
+        roundGame.setUserData(new String("Rounds"));
         Button okSettingsButton = new Button("Save");
         Button cancelSettingsButton = new Button ("Cancel");
         ToggleGroup settingsRadioButtons = new ToggleGroup();
@@ -263,8 +285,8 @@ public class Table extends Application {
         FlowPane pointsToWinPane = new FlowPane(Orientation.HORIZONTAL);
         Label pointsLabel = new Label ("Points to win:  ");
         Label roundsLabel = new Label( "Rounds to play: ");
-        TextField pointsField = new TextField();
-        TextField roundsField = new TextField();
+        TextField pointsField = new TextField("300");
+        TextField roundsField = new TextField("20");
         roundsQuantityPane.getChildren().add(roundsLabel);
         roundsQuantityPane.getChildren().add(roundsField);
         pointsToWinPane.getChildren().add(pointsLabel);
@@ -284,19 +306,11 @@ public class Table extends Application {
         roundsQuantityPane.setDisable(true);
         settingsPane.getChildren().add(okSettingsButton);
         settingsPane.getChildren().add(cancelSettingsButton);
-        Scene settingsScene = new Scene (settingsPane, 370,260);
+        Scene settingsScene = new Scene (settingsPane, 370,300);
         Stage settingsStage = new Stage();
         settingsStage.setTitle("Game Settings");
         settingsStage.setScene(settingsScene);
         settingsStage.show();
-
-        okSettingsButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                gameMode=settingsRadioButtons.getSelectedToggle().toString();
-
-            }
-        });
 
         roundGame.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -321,13 +335,35 @@ public class Table extends Application {
         cancelSettingsButton.setOnAction(event -> settingsStage.close());
 
         okSettingsButton.setOnAction(event -> {
-            this.gameMode = settingsRadioButtons.getSelectedToggle().getUserData().toString();
-            System.out.println(gameMode);
-            if (roundGame.isSelected()) {
-
-                this.roundsToEnd = Integer.parseInt(roundsField.getText());
+            gameMode = settingsRadioButtons.getSelectedToggle().getUserData().toString();
+            if ((roundGame.isSelected()) && (!roundsField.getText().isEmpty())) {
+                roundsToEnd = Integer.parseInt(roundsField.getText());
             }
-        });
+            if ((pointsGame.isSelected()) && (!pointsField.getText().isEmpty())) {
+                pointsToWin = Integer.parseInt(pointsField.getText());
+            }
+            customSettingsLabel2.setText(gameMode.toUpperCase()+ "( "+ (gameMode.equals("Rounds")? roundsToEnd : pointsToWin)+ " )");
 
+            settingsStage.close();
+        });
+    }
+
+    public StringBuilder readFile (String filePath) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        try {
+            FileReader fileReader = new FileReader(filePath);
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+
+            String textLine = bufferedReader.readLine();
+            do {
+                textLine = bufferedReader.readLine();
+                sb.append(textLine);
+            } while(textLine != null);
+            bufferedReader.close();
+        }
+        catch (Exception e) {
+            System.out.println("Nope");
+        }
+        return sb;
     }
 }
