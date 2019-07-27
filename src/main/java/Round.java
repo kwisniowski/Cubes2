@@ -181,6 +181,7 @@ public class Round {
         game.getTable().getCenterRightPanel().getChildren().add(currentPlayer);
         game.getTable().getCenterRightPanel().getChildren().add(currentPlayerView);
         game.getTable().getCenterRightPanel().getChildren().add(scoreView);
+        game.getTable().getCenterRightPanel().getChildren().add(game.roundCounterLabel);
         cubeThrow(5);
         validateButtons();
         boolean bonus = throwCheckforBonus();
