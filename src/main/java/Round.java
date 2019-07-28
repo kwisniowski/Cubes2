@@ -7,6 +7,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
+import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -202,9 +203,7 @@ public class Round {
             infoAlert.showAndWait().ifPresent(type-> {
                 if (type == okButton)
                 {
-                    ////////////////////////
-                    ////  To do ! ! ! !
-                    ///////////////////
+                    game.getTable().resetGame();
                 }
                 if (type == noButton)
                 {

@@ -118,11 +118,13 @@ public class Table extends Application {
         launch(args);
     }
 
+    Stage myStage;
     @Override
     public void start(Stage primaryStage) throws Exception {
 
+        myStage = primaryStage;
         gridPane.setAlignment(Pos.BOTTOM_CENTER);
-        gridPane.setPadding(new Insets(15,15,15,15));
+        gridPane.setPadding(new Insets(15, 15, 15, 15));
         gridPane.setHgap(10);
         gridPane.setVgap(10);
         gridPane.setGridLinesVisible(true);
@@ -133,7 +135,7 @@ public class Table extends Application {
         column0.setPercentWidth(15);
         column1.setPercentWidth(70);
         column2.setPercentWidth(15);
-        gridPane.getColumnConstraints().addAll(column0,column1,column2);
+        gridPane.getColumnConstraints().addAll(column0, column1, column2);
 
         RowConstraints row0 = new RowConstraints();
         RowConstraints row1 = new RowConstraints();
@@ -141,12 +143,12 @@ public class Table extends Application {
         row0.setPercentHeight(20);
         row1.setPercentHeight(60);
         row2.setPercentHeight(20);
-        gridPane.getRowConstraints().addAll(row0,row1,row2);
+        gridPane.getRowConstraints().addAll(row0, row1, row2);
 
         centerPanel.setAlignment(Pos.CENTER);
         centerPanel.setHgap(30);
         centerPanel.setPrefWrapLength(700);
-        for (int i=1;i<6;i++) {
+        for (int i = 1; i < 6; i++) {
             Cube tempCube = new Cube();
             tempCube.cubeThrow();
             centerPanel.getChildren().add(tempCube.getActualView());
@@ -156,7 +158,7 @@ public class Table extends Application {
         topCenterPanel.getChildren().add(welcomeLabel);
         topCenterPanel.getChildren().add(customSettingsLabel1);
         topCenterPanel.getChildren().add(customSettingsLabel2);
-        customSettingsLabel2.setText(gameMode.toUpperCase()+ "( "+ (gameMode.equals("Ronds")? roundsToEnd : pointsToWin)+ " )");
+        customSettingsLabel2.setText(gameMode.toUpperCase() + "( " + (gameMode.equals("Ronds") ? roundsToEnd : pointsToWin) + " )");
 
         topRightPanel.setAlignment(Pos.CENTER);
         topRightPanel.getChildren().add(startButton);
@@ -168,17 +170,17 @@ public class Table extends Application {
         topRightPanel.setAlignment(Pos.CENTER);
         bottomRightPanel.setAlignment(Pos.CENTER);
 
-        GridPane.setConstraints(topCenterPanel,1,0);
-        GridPane.setConstraints(bottomCenterPanel,1,2);
-        GridPane.setConstraints(centerPanel, 1,1);
-        GridPane.setConstraints(topRightPanel,2,0);
-        GridPane.setConstraints(centerRightPanel,2,1);
-        GridPane.setConstraints(bottomRightPanel,2,2);
-        GridPane.setConstraints(bottomLeftPanel,0,2);
-        GridPane.setConstraints(centerLeftPanel,0,1);
-        GridPane.setConstraints(topLeftPanel,0,0);
-        gridPane.getChildren().addAll(topCenterPanel,bottomCenterPanel, centerPanel,topRightPanel, bottomRightPanel,
-                centerRightPanel,bottomLeftPanel,centerLeftPanel,topLeftPanel);
+        GridPane.setConstraints(topCenterPanel, 1, 0);
+        GridPane.setConstraints(bottomCenterPanel, 1, 2);
+        GridPane.setConstraints(centerPanel, 1, 1);
+        GridPane.setConstraints(topRightPanel, 2, 0);
+        GridPane.setConstraints(centerRightPanel, 2, 1);
+        GridPane.setConstraints(bottomRightPanel, 2, 2);
+        GridPane.setConstraints(bottomLeftPanel, 0, 2);
+        GridPane.setConstraints(centerLeftPanel, 0, 1);
+        GridPane.setConstraints(topLeftPanel, 0, 0);
+        gridPane.getChildren().addAll(topCenterPanel, bottomCenterPanel, centerPanel, topRightPanel, bottomRightPanel,
+                centerRightPanel, bottomLeftPanel, centerLeftPanel, topLeftPanel);
 
         Menu menuGame = new Menu("Game");
         Menu menuSettings = new Menu("Settings");
@@ -207,8 +209,6 @@ public class Table extends Application {
         Scene scene = new Scene(root, 1024, 768, Color.GREY);
         primaryStage.setTitle("Cubes 2.0");
         primaryStage.setResizable(true);
-        primaryStage.initStyle(StageStyle.DECORATED);
-
         primaryStage.setScene(scene);
         primaryStage.show();
 
@@ -216,16 +216,16 @@ public class Table extends Application {
             @Override
             public void handle(ActionEvent event) {
                 menuSettings.setDisable(true);
-               startGame();
+                startGame();
             }
         });
 
-       getPlayer1NameTextField().setOnMouseClicked(new EventHandler<MouseEvent>() {
-           @Override
-           public void handle(MouseEvent event) {
-               getPlayer1NameTextField().clear();
-           }
-       });
+        getPlayer1NameTextField().setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                getPlayer1NameTextField().clear();
+            }
+        });
 
         getPlayer2NameTextField().setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
@@ -235,30 +235,43 @@ public class Table extends Application {
         });
 
         menuItemEndGame.setOnAction(actionEvent -> Platform.exit());
-        menuItemNewGame.setOnAction(actionEvent -> startGame());
+        menuItemNewGame.setOnAction(actionEvent -> {
+            Table table = new Table();
+        });
         menuItemAbout.setOnAction(actionEvent -> {
             Alert infoAlert = new Alert(Alert.AlertType.INFORMATION);
             infoAlert.setTitle("Cubes 2.0");
             infoAlert.setContentText("This is a Java FX project\nKacper Wiśniowski\nKurs Kodilla 2019");
             infoAlert.show();
         });
-        menuItemSettings.setOnAction(actionEvent-> drawSettingsWindow());
+        menuItemSettings.setOnAction(actionEvent -> drawSettingsWindow());
         menuRules.setOnAction(actionEvent -> {
             Alert infoAlert = new Alert(Alert.AlertType.INFORMATION);
             infoAlert.setTitle("Cubes 2.0 Rules");
             StringBuilder sb = new StringBuilder();
             try {
                 BufferedReader in = new BufferedReader(new FileReader(new File("resources/rules.txt")));
-                while (in.readLine()!=null) {
-                    sb.append(in.readLine()+"\n");
+                while (in.readLine() != null) {
+                    sb.append(in.readLine() + "\n");
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        infoAlert.setContentText(sb.toString());
+            infoAlert.setContentText(sb.toString());
             infoAlert.show();
         });
 
+        menuItemNewGame.setOnAction(actionEvent -> resetGame());
+    }
+
+    public void resetGame () {
+        Table tbl = new Table();
+        try {
+            myStage.close();
+            tbl.start(myStage);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void startGame() {
@@ -345,7 +358,7 @@ public class Table extends Application {
             if ((pointsGame.isSelected()) && (!pointsField.getText().isEmpty())) {
                 pointsToWin = Integer.parseInt(pointsField.getText());
             }
-            customSettingsLabel2.setText(gameMode.toUpperCase()+ "( "+ (gameMode.equals("Rounds")? roundsToEnd : pointsToWin)+ " )");
+            customSettingsLabel2.setText(gameMode.toUpperCase()+ " ( "+ (gameMode.equals("Rounds")? roundsToEnd : pointsToWin)+ " )");
 
             settingsStage.close();
         });
