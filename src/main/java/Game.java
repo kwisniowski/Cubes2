@@ -136,7 +136,6 @@ public class Game {
         nextRound.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                secondRoundPoints=round.getScore();
                 bonusInfo.setText("");
                 throwRest.setDisable(false);
                 if (!isRiskResult()){
@@ -180,7 +179,9 @@ public class Game {
                     bonusInfo.setText("Ups!");
                     riskResult = true;
                 }
-                if ((int) counter==cubesCount) {
+                System.out.println("Test");
+                if (((int) counter)==cubesCount) {
+                    bonusInfo.setText(" YES! + 50\n For 5 cubes ");
                     round.updateScore(50);
                 }
             }
@@ -198,7 +199,6 @@ public class Game {
     }
 
     public void nextRound() {
-        roundCounter++;
         switchUser();
         getTable().getTopCenterPanel().getChildren().clear();
         getTable().getBottomCenterPanel().getChildren().clear();
@@ -207,6 +207,7 @@ public class Game {
         goButton.setVisible(false);
         getTable().getCenterRightPanel().getChildren().add(nextRound);
         getTable().getCenterRightPanel().getChildren().add(throwRest);
+        roundCounter++;
     }
 }
 

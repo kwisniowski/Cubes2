@@ -1,11 +1,12 @@
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -173,15 +174,63 @@ public class Round {
     }
 
     public void playRound () {
+        if (game.getRoundCounter()/2+1 > game.getTable().getRoundsToEnd()) {
+            Alert infoAlert = new Alert(Alert.AlertType.CONFIRMATION);
+            infoAlert.setTitle("Cubes 2.0");
+            int gameResult = game.getPlayer1().getPlayerScore()-game.getPlayer2().getPlayerScore();
+
+            if (gameResult==0) {
+                infoAlert.setContentText("It's a tie!\n" + game.getPlayer1().getName()+": "+game.getPlayer1().getPlayerScore()+
+                        " points\n"+game.getPlayer2().getName()+": "+game.getPlayer2().getPlayerScore()+" points"+"\nDo you want to play again?");
+            }
+            else {
+                String winner = null;
+                if (gameResult > 0) {
+                    winner = game.getPlayer1().getName();
+                }
+                else {
+                    winner = game.getPlayer2().getName();
+                }
+
+                    infoAlert.setContentText("Congrtatulations!\n" + winner + " wins the game!\n\n" + game.getPlayer1().getName() + ": " + game.getPlayer1().getPlayerScore() +
+                            " points\n" + game.getPlayer2().getName() + ": " + game.getPlayer2().getPlayerScore() + " points" + "\nDo you want to play again?\n");
+                }
+
+            ButtonType okButton = new ButtonType("Yes", ButtonBar.ButtonData.YES);
+            ButtonType noButton = new ButtonType("No, exit", ButtonBar.ButtonData.NO);
+            infoAlert.getButtonTypes().setAll(okButton, noButton);
+            infoAlert.showAndWait().ifPresent(type-> {
+                if (type == okButton)
+                {
+                    ////////////////////////
+                    ////  To do ! ! ! !
+                    ///////////////////
+                }
+                if (type == noButton)
+                {
+                    Platform.exit();
+                }
+            });
+        }
+
         score=0;
         game.throwRest.setDisable(false);
         currentPlayerView.setText(player.getName());
+        scoreView.setFont(new Font("Arial",24));
         scoreView.setText(String.valueOf(getScore()));
         game.getTable().getCenterRightPanel().getChildren().clear();
         game.getTable().getCenterRightPanel().getChildren().add(currentPlayer);
+        currentPlayerView.setFont(new Font("Arial",20));
+        currentPlayerView.setTextFill(Color.BLUE);
         game.getTable().getCenterRightPanel().getChildren().add(currentPlayerView);
+        game.getTable().getCenterRightPanel().getChildren().add(new Label("\n"));
+        game.getTable().getCenterRightPanel().getChildren().add(new Label("Score:"));
         game.getTable().getCenterRightPanel().getChildren().add(scoreView);
+        game.getTable().getCenterRightPanel().getChildren().add(new Label("\nRound number: \n"));
+        game.roundCounterLabel.setFont(new Font("Arial",24));
+        game.roundCounterLabel.setText(String.valueOf(game.getRoundCounter()/2+1)+"\n");
         game.getTable().getCenterRightPanel().getChildren().add(game.roundCounterLabel);
+        game.getTable().getCenterRightPanel().getChildren().add(new Label("\n"));
         cubeThrow(5);
         validateButtons();
         boolean bonus = throwCheckforBonus();
@@ -194,13 +243,8 @@ public class Round {
             player.updateScore(-50);
             game.throwRest.setDisable(false);
         }
-
-        centerPanelDraw();
-
-        if (playerCubes.size()==5) {
-            playRound();
-            player.updateScore(50);
-            game.switchUser();
+        if (!tableCubes.isEmpty()) {
+            centerPanelDraw();
         }
 
         cube1Button.setOnAction(new EventHandler<ActionEvent>() {
@@ -208,6 +252,7 @@ public class Round {
             public void handle(ActionEvent event) {
                 buttonHandler(0);
                 cube1Button.setDisable(true);
+                isBonusInOneThrow();
             }
         });
         cube2Button.setOnAction(new EventHandler<ActionEvent>() {
@@ -215,6 +260,7 @@ public class Round {
             public void handle(ActionEvent event) {
                 buttonHandler(1);
                 cube2Button.setDisable(true);
+                isBonusInOneThrow();
             }
         });
         cube3Button.setOnAction(new EventHandler<ActionEvent>() {
@@ -222,6 +268,7 @@ public class Round {
             public void handle(ActionEvent event) {
                 buttonHandler(2);
                 cube3Button.setDisable(true);
+                isBonusInOneThrow();
             }
         });
         cube4Button.setOnAction(new EventHandler<ActionEvent>() {
@@ -229,6 +276,7 @@ public class Round {
             public void handle(ActionEvent event) {
                 buttonHandler(3);
                 cube4Button.setDisable(true);
+                isBonusInOneThrow();
             }
         });
         cube5Button.setOnAction(new EventHandler<ActionEvent>() {
@@ -236,6 +284,7 @@ public class Round {
             public void handle(ActionEvent event) {
                 buttonHandler(4);
                 cube5Button.setDisable(true);
+                isBonusInOneThrow();
             }
         });
     }
@@ -243,6 +292,7 @@ public class Round {
     public void buttonHandler(int cnt) {
         score+=tableCubes.get(cnt).validateCubeScore();
         playerCubes.add(tableCubes.get(cnt));
+        scoreView.setFont(new Font("Arial",24));
         scoreView.setText(String.valueOf(getScore()));
         drawPlayerCubes(player);
     }
@@ -265,6 +315,14 @@ public class Round {
     public void updateScore (int update) {
         score+=update;
         scoreView.setText(String.valueOf(score));
+    }
+
+    public void isBonusInOneThrow() {
+        if (playerCubes.size()==5) {
+            updateScore(50);
+            game.bonusInfo.setTextFill(Color.GREEN);
+            game.bonusInfo.setText(" YES! + 50\n For 5 cubes ");
+        }
     }
 
 }

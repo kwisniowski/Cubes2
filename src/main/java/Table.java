@@ -274,12 +274,16 @@ public class Table extends Application {
 
     public void drawSettingsWindow() {
         FlowPane settingsPane = new FlowPane(Orientation.VERTICAL);
+        settingsPane.setPrefHeight(270);
+        settingsPane.setPrefWidth(140);
         RadioButton pointsGame = new RadioButton("Points");
         pointsGame.setUserData(new String("Points"));
         RadioButton roundGame = new RadioButton("Rounds");
         roundGame.setUserData(new String("Rounds"));
+        HBox buttonsPane = new HBox();
         Button okSettingsButton = new Button("Save");
         Button cancelSettingsButton = new Button ("Cancel");
+        buttonsPane.getChildren().addAll(okSettingsButton,cancelSettingsButton);
         ToggleGroup settingsRadioButtons = new ToggleGroup();
         FlowPane roundsQuantityPane = new FlowPane(Orientation.HORIZONTAL);
         FlowPane pointsToWinPane = new FlowPane(Orientation.HORIZONTAL);
@@ -304,9 +308,8 @@ public class Table extends Application {
 
         pointsGame.setSelected(true);
         roundsQuantityPane.setDisable(true);
-        settingsPane.getChildren().add(okSettingsButton);
-        settingsPane.getChildren().add(cancelSettingsButton);
-        Scene settingsScene = new Scene (settingsPane, 370,300);
+        settingsPane.getChildren().add(buttonsPane);
+        Scene settingsScene = new Scene (settingsPane);
         Stage settingsStage = new Stage();
         settingsStage.setTitle("Game Settings");
         settingsStage.setScene(settingsScene);
@@ -362,7 +365,9 @@ public class Table extends Application {
             bufferedReader.close();
         }
         catch (Exception e) {
-            System.out.println("Nope");
+            Alert infoAlert = new Alert(Alert.AlertType.ERROR);
+            infoAlert.setTitle("Cubes 2.0 Error");
+            infoAlert.setContentText("Rules file not found");
         }
         return sb;
     }
