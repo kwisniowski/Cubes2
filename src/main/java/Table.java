@@ -34,7 +34,7 @@ public class Table extends Application {
         return pointsToWin;
     }
 
-    private int roundsToEnd=20;
+    private int roundsToEnd=10;
     private int pointsToWin=300;
     private VBox root = new VBox();
     private GridPane gridPane = new GridPane();
@@ -241,7 +241,7 @@ public class Table extends Application {
         menuItemAbout.setOnAction(actionEvent -> {
             Alert infoAlert = new Alert(Alert.AlertType.INFORMATION);
             infoAlert.setTitle("Cubes 2.0");
-            infoAlert.setContentText("This is a Java FX project\nKacper Wiśniowski\nKurs Kodilla 2019");
+            infoAlert.setContentText("This is a Java FX project\nKacper Wisniowski\nKurs Kodilla 2019");
             infoAlert.show();
         });
         menuItemSettings.setOnAction(actionEvent -> drawSettingsWindow());
@@ -250,7 +250,7 @@ public class Table extends Application {
             infoAlert.setTitle("Cubes 2.0 Rules");
             StringBuilder sb = new StringBuilder();
             try {
-                BufferedReader in = new BufferedReader(new FileReader(new File("resources/rules.txt")));
+                BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(new File("resources/rules.txt")),"UTF-8"));
                 while (in.readLine() != null) {
                     sb.append(in.readLine() + "\n");
                 }

@@ -175,7 +175,7 @@ public class Round {
     }
 
     public void playRound () {
-        if (game.getRoundCounter()/2+1 > game.getTable().getRoundsToEnd()) {
+        if ((game.getTable().getGameMode().equals("Rounds"))&&((game.getRoundCounter()/2+1 > game.getTable().getRoundsToEnd()))) {
             Alert infoAlert = new Alert(Alert.AlertType.CONFIRMATION);
             infoAlert.setTitle("Cubes 2.0");
             int gameResult = game.getPlayer1().getPlayerScore()-game.getPlayer2().getPlayerScore();
@@ -218,6 +218,9 @@ public class Round {
         scoreView.setFont(new Font("Arial",24));
         scoreView.setText(String.valueOf(getScore()));
         game.getTable().getCenterRightPanel().getChildren().clear();
+        game.getTable().getCenterRightPanel().getChildren().add(new Label(game.getTable().getGameMode()));
+        game.getTable().getCenterRightPanel().getChildren().add(new Label((game.getTable().getGameMode().equals("Points")? String.valueOf(game.getTable().getPointsToWin()+"\n\n") :
+                String.valueOf(game.getTable().getRoundsToEnd()+"\n\n"))));
         game.getTable().getCenterRightPanel().getChildren().add(currentPlayer);
         currentPlayerView.setFont(new Font("Arial",20));
         currentPlayerView.setTextFill(Color.BLUE);

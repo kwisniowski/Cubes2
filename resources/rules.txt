@@ -1,18 +1,30 @@
 Zadady gry Cubes: 
-- Zaokwvwv
-v
-erv
-er
-ve
-rververve
-rv
-erververv
-er
-verververver
-ver
-verververv
-r
-verv
-swrwfr
-erger
-g4g34f
+
+Gra polega na zbieraniu punktów z rzucanych przez gracza kości. Puntky można zboywać za:
+- Wyrzucenie 1 oczka - 10pkt
+- Wyrzucenie 5 oczek - 5pkt
+- Wyrzucenie bonusa (3,4,5 kości z tą samą liczbą oczek) za jednym razem. Bonus przyznawany jest
+    wg tabeli :
+                1 oczko     2 oczka      3 oczka      4 oczka      5 oczek
+    3 kości      100           20          30           40          50
+    4 kości      200           40          60           80          100
+    5 kości      300           60          90           120         150
+
+- Wykorzystanie wszystkich kości (5 kości po stronie gracza) - 50 pkt.
+
+Tura gracza wygląda nastepująco:
+- Gracz rzuca 5 kośćmi, kości z 1 lub 5 oczkami są oznaczone przyciskami jako możliwe do zabrania
+na swoją stronę stołu. Kości bonusowe są automatycznie przenoszone na stronę stołu gracza).
+Jeśli gracza ma po swojej stronie mniej niż 5 kości może wykonać ponowny rzut resztą kości.
+Jeżeli w ponownym rzuci trafi 1 lub 5 oczek dostaje za nie punkty wg normalnych zasad.
+Jeżeli w ponownym rzucie gracz trzafi 1 lub 5 oczeka na wszystkich kościach dostahe bonus +50 tak,
+jakby rzucił wszystkimi za pierwszym razem.
+Nie ma możliwości wurzucenia bonusa (kości x3,x4,x5 w jednem numerze).
+Jeżeli w ponownym rzucie gracz nie trafi żadnej 1 ani 5 traci punkty z pierwszego rzutu a kolejka
+przechodz na następnego gracza.
+
+Gra toczy się wgf ustawień:
+- aż któryś za graczy osiągnie określony limt punktowy
+- aż osiągnie się limit rund - wygrywa gracz, który ma więcej punktów w tym momencie.
+
+Udanej zabawy!
