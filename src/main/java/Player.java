@@ -84,9 +84,7 @@ public class Player {
         infoAlert.showAndWait().ifPresent(type-> {
             if (type == okButton)
             {
-                  ////////////////////////
-                  ////  To do ! ! ! !
-                  ///////////////////
+                game.getTable().resetGame();
             }
             if (type == noButton)
             {

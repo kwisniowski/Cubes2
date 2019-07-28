@@ -1,4 +1,5 @@
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
@@ -10,6 +11,7 @@ import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class Game {
     private Table table;
@@ -153,6 +155,9 @@ public class Game {
         throwRest.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+                if (round.isComputerRound()) {
+                    round.pause();
+                }
                 throwRest.setDisable(true);
                 int cubesCount = 5 - round.getPlayerCubes().size();
                 round.getPlayerCubes().clear();
@@ -169,7 +174,8 @@ public class Game {
                     for (Cube cube : round.getTableCubes()) {
                         if ((cube.getActualScore() == 5)||(cube.getActualScore()==1)) {
                             round.getPlayerCubes().add(cube);
-                            round.setScore(round.getScore()+cube.validateCubeScore());
+                            round.updateScore(cube.validateCubeScore());
+     //                       round.setScore(round.getScore()+cube.validateCubeScore());
                             round.getScoreView().setText(String.valueOf(round.getScore()));
                         }
                     }
@@ -179,8 +185,9 @@ public class Game {
                     bonusInfo.setText("Ups!");
                     riskResult = true;
                 }
-                System.out.println("Test");
+
                 if (((int) counter)==cubesCount) {
+                    bonusInfo.setTextFill(Color.GREEN);
                     bonusInfo.setText(" YES! + 50\n For 5 cubes ");
                     round.updateScore(50);
                 }
