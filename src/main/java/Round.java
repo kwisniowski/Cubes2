@@ -11,6 +11,7 @@ import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
 
 public class Round {
@@ -95,6 +96,11 @@ public class Round {
             buttonsBar.getChildren().add(button);
         }
         game.getTable().getCenterPanel().getChildren().add(cubesAndButtonsBar);
+        try {
+            TimeUnit.SECONDS.sleep(1);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public boolean throwCheckForEmpty() {
@@ -233,63 +239,116 @@ public class Round {
         game.roundCounterLabel.setText(String.valueOf(game.getRoundCounter()/2+1)+"\n");
         game.getTable().getCenterRightPanel().getChildren().add(game.roundCounterLabel);
         game.getTable().getCenterRightPanel().getChildren().add(new Label("\n"));
-        cubeThrow(5);
-        validateButtons();
-        boolean bonus = throwCheckforBonus();
 
-        if (throwCheckForEmpty()&&(!bonus)) {
-            updateScore(-50);
-            game.bonusInfo.setTextFill(Color.RED);
-            game.bonusInfo.setText("UPS!  -50");
-        }
-        if (throwCheckForEmpty()&&(bonus)) {
-            game.throwRest.setDisable(false);
-        }
-        if (!tableCubes.isEmpty()) {
-            centerPanelDraw();
+        if ((!game.getTable().isComputerPalying())||((game.getTable().isComputerPalying())&&player.equals(game.getPlayer1()))) {
+            cubeThrow(5);
+            validateButtons();
+            boolean bonus = throwCheckforBonus();
+
+            if (throwCheckForEmpty() && (!bonus)) {
+                updateScore(-50);
+                game.bonusInfo.setTextFill(Color.RED);
+                game.bonusInfo.setText("UPS!  -50");
+            }
+            if (throwCheckForEmpty() && (bonus)) {
+                game.throwRest.setDisable(false);
+            }
+            if (!tableCubes.isEmpty()) {
+                centerPanelDraw();
+            }
         }
 
-        cube1Button.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                buttonHandler(0);
-                cube1Button.setDisable(true);
-                isBonusInOneThrow();
+        else if ((game.getTable().isComputerPalying())&&player.equals(game.getPlayer2())) {
+            cubeThrow(5);
+            validateButtons();
+            boolean bonus = throwCheckforBonus();
+            if (throwCheckForEmpty() && (!bonus)) {
+                updateScore(-50);
+                game.bonusInfo.setTextFill(Color.RED);
+                game.bonusInfo.setText("UPS!  -50");
             }
-        });
-        cube2Button.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                buttonHandler(1);
-                cube2Button.setDisable(true);
-                isBonusInOneThrow();
+            if (throwCheckForEmpty() && (bonus)) {
+                game.throwRest.setDisable(false);
             }
-        });
-        cube3Button.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                buttonHandler(2);
-                cube3Button.setDisable(true);
-                isBonusInOneThrow();
+            if (!tableCubes.isEmpty()) {
+                centerPanelDraw();
             }
-        });
-        cube4Button.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                buttonHandler(3);
-                cube4Button.setDisable(true);
-                isBonusInOneThrow();
+
+            try {
+                TimeUnit.SECONDS.sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-        });
-        cube5Button.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                buttonHandler(4);
-                cube5Button.setDisable(true);
-                isBonusInOneThrow();
+
+           for(Button button:buttonsList) {
+                if (!button.isDisable()) {
+                    Platform.runLater(button::fire);
+                }
             }
-        });
-    }
+            try {
+                TimeUnit.SECONDS.sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            if (!game.throwRest.isDisable()) {
+                Platform.runLater(game.throwRest::fire);
+            }
+            try {
+                TimeUnit.SECONDS.sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            Platform.runLater(game.nextRound::fire);
+            try {
+                TimeUnit.SECONDS.sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+            cube1Button.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+                    buttonHandler(0);
+                    cube1Button.setDisable(true);
+                    isBonusInOneThrow();
+                }
+            });
+            cube2Button.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+                    buttonHandler(1);
+                    cube2Button.setDisable(true);
+                    isBonusInOneThrow();
+                }
+            });
+            cube3Button.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+                    buttonHandler(2);
+                    cube3Button.setDisable(true);
+                    isBonusInOneThrow();
+                }
+            });
+            cube4Button.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+                    buttonHandler(3);
+                    cube4Button.setDisable(true);
+                    isBonusInOneThrow();
+                }
+            });
+            cube5Button.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent event) {
+                    buttonHandler(4);
+                    cube5Button.setDisable(true);
+                    isBonusInOneThrow();
+                }
+            });
+        }
+
 
     public void buttonHandler(int cnt) {
         score+=tableCubes.get(cnt).validateCubeScore();
@@ -312,6 +371,11 @@ public class Round {
                 game.getTable().getBottomCenterPanel().getChildren().add(cube.getActualView());
             }
         }
+        try {
+            TimeUnit.SECONDS.sleep(1);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public void updateScore (int update) {
@@ -324,6 +388,7 @@ public class Round {
             updateScore(50);
             game.bonusInfo.setTextFill(Color.GREEN);
             game.bonusInfo.setText(" YES! + 50\n For 5 cubes ");
+            game.throwRest.setDisable(true);
         }
     }
 

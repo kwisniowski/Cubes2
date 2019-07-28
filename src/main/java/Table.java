@@ -34,6 +34,11 @@ public class Table extends Application {
         return pointsToWin;
     }
     private boolean isComputerPalying=true;
+
+    public boolean isComputerPalying() {
+        return isComputerPalying;
+    }
+
     private int roundsToEnd=10;
     private int pointsToWin=300;
     private VBox root = new VBox();
