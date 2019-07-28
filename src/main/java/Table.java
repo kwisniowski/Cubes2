@@ -33,7 +33,7 @@ public class Table extends Application {
     public int getPointsToWin() {
         return pointsToWin;
     }
-
+    private boolean isComputerPalying=true;
     private int roundsToEnd=10;
     private int pointsToWin=300;
     private VBox root = new VBox();
@@ -54,6 +54,11 @@ public class Table extends Application {
     private Label welcomeLabel = new Label("Cubes ver. 1   LET'S PLAY");
     private TextField player1NameTextField = new TextField(" Player 1");
     private TextField player2NameTextField = new TextField(" Player 2");
+
+    private HBox playersCount = new HBox();
+    private RadioButton onePlayer = new RadioButton("Play with computer");
+    private RadioButton twoplayers = new RadioButton("Play with your friend");
+    ToggleGroup playersCountButtons = new ToggleGroup();
 
     Label customSettingsLabel1 = new Label ("      Game mode: ");
     Label customSettingsLabel2 = new Label();
@@ -158,12 +163,14 @@ public class Table extends Application {
         topCenterPanel.getChildren().add(welcomeLabel);
         topCenterPanel.getChildren().add(customSettingsLabel1);
         topCenterPanel.getChildren().add(customSettingsLabel2);
-        customSettingsLabel2.setText(gameMode.toUpperCase() + "( " + (gameMode.equals("Ronds") ? roundsToEnd : pointsToWin) + " )");
+        customSettingsLabel2.setText(gameMode.toUpperCase() + "( " + (gameMode.equals("Rounds") ? roundsToEnd : pointsToWin) + " )");
 
         topRightPanel.setAlignment(Pos.CENTER);
         topRightPanel.getChildren().add(startButton);
 
         bottomCenterPanel.setAlignment(Pos.CENTER);
+        bottomCenterPanel.getChildren().addAll(onePlayer,twoplayers);
+        bottomCenterPanel.getChildren().add(new Label(""));
         bottomCenterPanel.getChildren().add(player1NameTextField);
         bottomCenterPanel.getChildren().add(player2NameTextField);
 
@@ -181,6 +188,16 @@ public class Table extends Application {
         GridPane.setConstraints(topLeftPanel, 0, 0);
         gridPane.getChildren().addAll(topCenterPanel, bottomCenterPanel, centerPanel, topRightPanel, bottomRightPanel,
                 centerRightPanel, bottomLeftPanel, centerLeftPanel, topLeftPanel);
+
+        onePlayer.setUserData("One");
+        twoplayers.setUserData("Two");
+        onePlayer.setSelected(true);
+        onePlayer.setToggleGroup(playersCountButtons);
+        twoplayers.setToggleGroup(playersCountButtons);
+
+        player1NameTextField.setDisable(false);
+        player2NameTextField.setText("Computer");
+        player2NameTextField.setDisable(true);
 
         Menu menuGame = new Menu("Game");
         Menu menuSettings = new Menu("Settings");
@@ -231,6 +248,28 @@ public class Table extends Application {
             @Override
             public void handle(MouseEvent event) {
                 getPlayer2NameTextField().clear();
+            }
+        });
+
+        twoplayers.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                if (twoplayers.isSelected()) {
+                    isComputerPalying=false;
+                    player2NameTextField.setDisable(false);
+                    player2NameTextField.setText("Player 2");
+                }
+            }
+        });
+
+        onePlayer.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                if (onePlayer.isSelected()) {
+                    isComputerPalying=true;
+                    player2NameTextField.setDisable(true);
+                    player2NameTextField.setText("Computer");
+                }
             }
         });
 

@@ -200,6 +200,7 @@ public class Game {
 
     public void nextRound() {
         switchUser();
+
         getTable().getTopCenterPanel().getChildren().clear();
         getTable().getBottomCenterPanel().getChildren().clear();
         round = new Round(currentPlayer, Game.this);

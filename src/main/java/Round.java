@@ -236,13 +236,13 @@ public class Round {
         cubeThrow(5);
         validateButtons();
         boolean bonus = throwCheckforBonus();
+
         if (throwCheckForEmpty()&&(!bonus)) {
-            player.updateScore(-50);
+            updateScore(-50);
             game.bonusInfo.setTextFill(Color.RED);
             game.bonusInfo.setText("UPS!  -50");
         }
         if (throwCheckForEmpty()&&(bonus)) {
-            player.updateScore(-50);
             game.throwRest.setDisable(false);
         }
         if (!tableCubes.isEmpty()) {
