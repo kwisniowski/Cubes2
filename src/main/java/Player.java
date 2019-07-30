@@ -7,18 +7,26 @@ import javafx.scene.control.Label;
 import java.util.List;
 
 public class Player {
-    private String name;
+    private String playersName;
     private List<Cube> playersCubes;
     private int playerScore;
     private Label playerLabel = new Label();
-    Game game;
+    private Game game;
+
+    public Player(String name) {
+        this.playersName = name;
+    }
+
+    public void setGame(Game game) {
+        this.game = game;
+    }
 
     public Label getPlayerLabel() {
         return playerLabel;
     }
 
     public String getName() {
-        return name;
+        return playersName;
     }
 
     public List<Cube> getPlayersCubes() {
@@ -29,10 +37,6 @@ public class Player {
         return playerScore;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public void setPlayersCubes(List<Cube> playersCubes) {
         this.playersCubes = playersCubes;
     }
@@ -41,42 +45,31 @@ public class Player {
         this.playerScore = playerScore;
     }
 
-    public Player(String name) {
-        this.name = name;
-    }
-
     @Override
     public String toString() {
         return "Player{" +
-                "name='" + name + '\'' +
+                "name='" + playersName + '\'' +
                 '}';
     }
 
     public void updateScore (int score) {
         playerScore+=score;
         playerLabel.setText(String.valueOf(playerScore));
-        checkForVictory();
+        checkForPointsVictory();
     }
 
-    public void checkForVictory() {
+    public void checkForPointsVictory() {
         if (game.getTable().getGameMode().equals("Points")) {
             if (playerScore >= game.getTable().getPointsToWin()) {
-                showGameSummary(name);
-            }
-
-            if (game.getTable().getGameMode().equals("Rounds")) {
-                if (game.getRoundCounter() >= game.getTable().getRoundsToEnd() * 2) {
-                    String winner = game.getPlayer1().getPlayerScore() > game.getPlayer2().getPlayerScore() ? game.getPlayer1().getName() : game.getPlayer2().getName();
-                    showGameSummary(winner);
-                }
+                showGameSummary();
             }
         }
     }
 
-    public void showGameSummary(String winner) {
+    public void showGameSummary() {
         Alert infoAlert = new Alert(Alert.AlertType.CONFIRMATION);
         infoAlert.setTitle("Cubes 2.0");
-        infoAlert.setContentText("Congrtatulations!\n"+winner+" wins the game!\n"+game.getPlayer1().getName()+": "+ game.getPlayer1().getPlayerScore()+
+        infoAlert.setContentText("Congrtatulations!\n"+playersName+" wins the game!\n"+game.getPlayer1().getName()+": "+ game.getPlayer1().getPlayerScore()+
                 " points\n"+game.getPlayer2().getName()+": "+game.getPlayer2().getPlayerScore()+" points"+"\nDo you want to play again?");
         ButtonType okButton = new ButtonType("Yes", ButtonBar.ButtonData.YES);
         ButtonType noButton = new ButtonType("No, exit", ButtonBar.ButtonData.NO);

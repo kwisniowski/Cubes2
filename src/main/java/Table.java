@@ -6,21 +6,18 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
-import javax.swing.*;
 import java.io.*;
-import java.nio.Buffer;
 
 public class Table extends Application {
     private String gameMode="Points";
+    Stage myStage;
 
     public String getGameMode() {
         return gameMode;
@@ -56,11 +53,9 @@ public class Table extends Application {
     private FlowPane bottomRightPanel = new FlowPane(Orientation.HORIZONTAL);
 
     private Button startButton = new Button("START");
-    private Label welcomeLabel = new Label("Cubes ver. 1   LET'S PLAY");
+    private Label welcomeLabel = new Label("Cubes ->   LET'S PLAY");
     private TextField player1NameTextField = new TextField(" Player 1");
     private TextField player2NameTextField = new TextField(" Player 2");
-
-    private HBox playersCount = new HBox();
     private RadioButton onePlayer = new RadioButton("Play with computer");
     private RadioButton twoplayers = new RadioButton("Play with your friend");
     ToggleGroup playersCountButtons = new ToggleGroup();
@@ -68,58 +63,36 @@ public class Table extends Application {
     Label customSettingsLabel1 = new Label ("      Game mode: ");
     Label customSettingsLabel2 = new Label();
 
-    public GridPane getGridPane() {
-        return gridPane;
-    }
-
     public HBox getTopCenterPanel() {
         return topCenterPanel;
     }
-
     public FlowPane getCenterPanel() {
         return centerPanel;
     }
-
     public FlowPane getBottomCenterPanel() {
         return bottomCenterPanel;
     }
-
     public FlowPane getTopLeftPanel() {
         return topLeftPanel;
     }
-
     public FlowPane getCenterLeftPanel() {
         return centerLeftPanel;
     }
-
     public FlowPane getBottomLeftPanel() {
         return bottomLeftPanel;
     }
-
     public FlowPane getTopRightPanel() {
         return topRightPanel;
     }
-
     public FlowPane getCenterRightPanel() {
         return centerRightPanel;
     }
-
     public FlowPane getBottomRightPanel() {
         return bottomRightPanel;
     }
-
-    public Button getStartButton() {
-        return startButton;
-    }
-
-    public Label getWelcomeLabel() {
-        return welcomeLabel;
-    }
-
     public TextField getPlayer1NameTextField() {
         return player1NameTextField;
     }
-
     public TextField getPlayer2NameTextField() {
         return player2NameTextField;
     }
@@ -128,7 +101,6 @@ public class Table extends Application {
         launch(args);
     }
 
-    Stage myStage;
     @Override
     public void start(Stage primaryStage) throws Exception {
 
@@ -210,7 +182,7 @@ public class Table extends Application {
         MenuItem menuItemNewGame = new MenuItem("New game");
         MenuItem menuItemEndGame = new MenuItem("End game");
         MenuItem menuItemAbout = new MenuItem("Show game info");
-        MenuItem menuItemSettings = new MenuItem("ShowSettings");
+        MenuItem menuItemSettings = new MenuItem("Show game settings");
         MenuItem menuRules = new MenuItem("Show game rules");
         menuGame.getItems().add(menuItemNewGame);
         menuGame.getItems().add(menuItemEndGame);
@@ -279,33 +251,43 @@ public class Table extends Application {
         });
 
         menuItemEndGame.setOnAction(actionEvent -> Platform.exit());
+
         menuItemNewGame.setOnAction(actionEvent -> {
             Table table = new Table();
         });
+
         menuItemAbout.setOnAction(actionEvent -> {
             Alert infoAlert = new Alert(Alert.AlertType.INFORMATION);
             infoAlert.setTitle("Cubes 2.0");
             infoAlert.setContentText("This is a Java FX project\nKacper Wisniowski\nKurs Kodilla 2019");
             infoAlert.show();
         });
+
         menuItemSettings.setOnAction(actionEvent -> drawSettingsWindow());
+        menuItemNewGame.setOnAction(actionEvent -> resetGame());
         menuRules.setOnAction(actionEvent -> {
             Alert infoAlert = new Alert(Alert.AlertType.INFORMATION);
             infoAlert.setTitle("Cubes 2.0 Rules");
+            infoAlert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+            infoAlert.getDialogPane().setMinWidth(Region.USE_PREF_SIZE);
             StringBuilder sb = new StringBuilder();
             try {
                 BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(new File("resources/rules.txt")),"UTF-8"));
-                while (in.readLine() != null) {
-                    sb.append(in.readLine() + "\n");
+                String line = in.readLine();
+                while (line!=null) {
+                    sb.append(line);
+                    sb.append(System.lineSeparator());
+                    line=in.readLine();
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Cubes 2.0");
+                alert.setContentText("Rules text file not found");
+                alert.show();
             }
             infoAlert.setContentText(sb.toString());
             infoAlert.show();
         });
-
-        menuItemNewGame.setOnAction(actionEvent -> resetGame());
     }
 
     public void resetGame () {
@@ -322,12 +304,10 @@ public class Table extends Application {
         Player player1 = new Player(getPlayer1NameTextField().getText());
         Player player2 = new Player(getPlayer2NameTextField().getText());
         Game game = new Game(Table.this, player1, player2);
-        player1.game = game;
-        player2.game = game;
-
-        game.prepareControls();
+        player1.setGame(game);
+        player2.setGame(game);
+        game.drawGameParametersAndButtons();
     }
-
 
     public void drawSettingsWindow() {
         FlowPane settingsPane = new FlowPane(Orientation.VERTICAL);
@@ -352,7 +332,6 @@ public class Table extends Application {
         roundsQuantityPane.getChildren().add(roundsField);
         pointsToWinPane.getChildren().add(pointsLabel);
         pointsToWinPane.getChildren().add(pointsField);
-
         pointsGame.setToggleGroup(settingsRadioButtons);
         roundGame.setToggleGroup(settingsRadioButtons);
         settingsPane.getChildren().add((new Label(" \nChoose your game type: \n ")));
@@ -362,7 +341,6 @@ public class Table extends Application {
         settingsPane.getChildren().add(roundGame);
         settingsPane.getChildren().add(roundsQuantityPane);
         settingsPane.getChildren().add((new Label(" \n ")));
-
         pointsGame.setSelected(true);
         roundsQuantityPane.setDisable(true);
         settingsPane.getChildren().add(buttonsPane);
@@ -406,26 +384,5 @@ public class Table extends Application {
 
             settingsStage.close();
         });
-    }
-
-    public StringBuilder readFile (String filePath) throws IOException {
-        StringBuilder sb = new StringBuilder();
-        try {
-            FileReader fileReader = new FileReader(filePath);
-            BufferedReader bufferedReader = new BufferedReader(fileReader);
-
-            String textLine = bufferedReader.readLine();
-            do {
-                textLine = bufferedReader.readLine();
-                sb.append(textLine);
-            } while(textLine != null);
-            bufferedReader.close();
-        }
-        catch (Exception e) {
-            Alert infoAlert = new Alert(Alert.AlertType.ERROR);
-            infoAlert.setTitle("Cubes 2.0 Error");
-            infoAlert.setContentText("Rules file not found");
-        }
-        return sb;
     }
 }

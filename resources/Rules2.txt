@@ -1,0 +1,23 @@
+Tura gracza wygl¹da nastepuj¹co:
+- Gracz rzuca 5 koœæmi, koœci z 1 (10 pkt) lub 5 oczkami (5 pkt) s¹ oznaczone
+przyciskami jako mo¿liwe do zabrania na swoj¹ stronê sto³u. Koœci bonusowe s¹ automatycznie
+przenoszone na stronê sto³u gracza). Jeœli gracza ma po swojej stronie mniej ni¿ 5 koœci
+mo¿e wykonaæ ponowny rzut reszt¹ koœci.
+Je¿eli w ponownym rzuci trafi 1 lub 5 oczek dostaje za nie punkty wg normalnych zasad.
+Je¿eli w ponownym rzucie gracz trzafi 1 lub 5 oczeka na wszystkich koœciach dostaje bonus +50 tak,
+jakby rzuci³ wszystkimi za pierwszym razem.
+Nie ma mo¿liwoœci wurzucenia bonusa (koœci x3,x4,x5 w jednem numerze).
+Je¿eli w ponownym rzucie gracz nie trafi ¿adnej 1 ani 5 traci punkty z pierwszego rzutu a kolejka
+przechodz na nastêpnego gracza.
+- Wyrzucenie bonusa (3,4,5 koœci z t¹ sam¹ liczb¹ oczek) za jednym razem. Bonus przyznawany jest
+1 oczko:  3 koœci: 100  4 koœci: 200  5 koœci: 300
+2 oczka:  3 koœci: 20   4 koœci: 40   5 koœci: 60
+3 oczka:  3 koœci: 30   4 koœci: 60   5 koœci: 90
+4 oczka:  3 koœci: 40   4 koœci: 80   5 koœci: 120
+5 oczek:  3 koœci: 50   4 koœci: 100  5 koœci: 150
+- Wykorzystanie wszystkich koœci (5 koœci po stronie gracza) - 50 pkt.
+Gra toczy siê wg ustawieñ:
+- a¿ któryœ za graczy osi¹gnie okreœlony limt punktowy
+- a¿ osi¹gnie siê limit rund - wygrywa gracz, który ma wiêcej punktów w tym momencie.
+
+Udanej zabawy!

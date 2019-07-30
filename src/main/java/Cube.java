@@ -36,7 +36,7 @@ public class Cube {
         cubesPoints.put(6,0);
     }
 
-    public int validateCubeScore () {
+    public int countCubePoints() {
         return cubesPoints.get(getActualScore());
     }
 
@@ -46,10 +46,6 @@ public class Cube {
 
     public ImageView getActualView() {
         return new ImageView(actualImage);
-    }
-
-    public void setActualScore(int actualScore) {
-        this.actualScore = actualScore;
     }
 
     public void cubeThrow () {

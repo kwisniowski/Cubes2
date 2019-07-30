@@ -1,40 +1,22 @@
-
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 public class Game {
     private Table table;
-    private int secondRoundPoints;
     private boolean riskResult;
     private Player player1;
     private Player player2;
     private Player currentPlayer;
     private Round round;
-
-    public int getRoundCounter() {
-        return roundCounter;
-    }
-
-    public void setRoundCounter(int roundCounter) {
-        this.roundCounter = roundCounter;
-    }
-
     private int  roundCounter =0;
-    private List<Cube> tableCubes = new ArrayList<>();
     Label currentPlayerName = new Label("");
-    Label player1ScoreView = new Label();
-    Label player2ScoreView = new Label();
     Label player1NameView = new Label();
     Label player2NameView = new Label();
     Label roundCounterLabel = new Label();
@@ -42,31 +24,6 @@ public class Game {
     Button goButton = new Button("Go!");
     Button nextRound = new Button("End Round");
     Button throwRest = new Button("Take a risk!");
-    String gameMode;
-
-    public Label getPlayer1ScoreView() {
-        return player1ScoreView;
-    }
-
-    public Label getPlayer2ScoreView() {
-        return player2ScoreView;
-    }
-
-    public void setPlayer1ScoreView(Label player1ScoreView) {
-        this.player1ScoreView = player1ScoreView;
-    }
-
-    public boolean isRiskResult() {
-        return riskResult;
-    }
-
-    public void setPlayer2ScoreView(Label player2ScoreView) {
-        this.player2ScoreView = player2ScoreView;
-    }
-
-    public Player getCurrentPlayer() {
-        return currentPlayer;
-    }
 
     public Game(Table table, Player player1, Player player2) {
         this.table = table;
@@ -77,20 +34,26 @@ public class Game {
         currentPlayer=player2;
     }
 
+    public int getRoundCounter() {
+        return roundCounter;
+    }
+    public boolean isRiskResult() {
+        return riskResult;
+    }
+    public Player getCurrentPlayer() {
+        return currentPlayer;
+    }
     public Player getPlayer1() {
         return player1;
     }
-
     public Player getPlayer2() {
         return player2;
     }
-
     public Table getTable() {
         return table;
     }
 
-    public void prepareControls() {
-
+    public void drawGameParametersAndButtons() {
         player1.getPlayerLabel().setFont(new Font("Arial", 24));
         player1NameView.setFont(new Font("Arial", 24));
         player1NameView.setText(player1.getName());
@@ -104,23 +67,19 @@ public class Game {
         table.getBottomLeftPanel().setAlignment(Pos.CENTER);
         table.getBottomLeftPanel().getChildren().clear();
         table.getBottomLeftPanel().getChildren().add(player2NameView);
-
         player1.getPlayerLabel().setText(String.valueOf(player1.getPlayerScore()));
         player2.getPlayerLabel().setText(String.valueOf(player2.getPlayerScore()));
         table.getTopRightPanel().getChildren().clear();
         table.getTopRightPanel().getChildren().add(player1.getPlayerLabel());
         table.getBottomRightPanel().getChildren().clear();
         table.getBottomRightPanel().getChildren().add(player2.getPlayerLabel());
-
         bonusInfo.setAlignment(Pos.CENTER);
         table.getCenterLeftPanel().setAlignment(Pos.CENTER);
         table.getCenterLeftPanel().getChildren().add(bonusInfo);
-
         table.getCenterRightPanel().getChildren().clear();
         table.getCenterRightPanel().getChildren().add(goButton);
         table.getCenterRightPanel().setAlignment(Pos.CENTER);
         table.getCenterRightPanel().getChildren().add(currentPlayerName);
-
         table.getCenterPanel().getChildren().clear();
         table.getBottomCenterPanel().getChildren().clear();
         table.getTopCenterPanel().getChildren().clear();
@@ -174,8 +133,7 @@ public class Game {
                     for (Cube cube : round.getTableCubes()) {
                         if ((cube.getActualScore() == 5)||(cube.getActualScore()==1)) {
                             round.getPlayerCubes().add(cube);
-                            round.updateScore(cube.validateCubeScore());
-     //                       round.setScore(round.getScore()+cube.validateCubeScore());
+                            round.updateScore(cube.countCubePoints());
                             round.getScoreView().setText(String.valueOf(round.getScore()));
                         }
                     }
